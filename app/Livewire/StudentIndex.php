@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\ecole;
+use App\Models\eleve;
 use App\Models\Student;
 use Illuminate\Pagination\Paginator;
 use Livewire\Component;
@@ -14,7 +16,7 @@ class StudentIndex extends Component
     use WithPagination;
     use WithFileUploads;
     protected $paginationTheme = 'bootstrap';
-    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent,  $fichier ;
+    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent,  $fichier,$ecole_id ;
     public $fileName;
     public $search;
     public $icon;
@@ -46,7 +48,7 @@ class StudentIndex extends Component
     }
 
     private function resetInput(){
-        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->fichier='';
+        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->fichier=$this->ecole_id='';
     }
 
     public function storeStudent(){
@@ -59,9 +61,11 @@ class StudentIndex extends Component
             'tgp'=>'required',
             'dateNaissance'=>'required|date',
             'contactParent'=>'',
-            'fichier' =>'required|file|mimes:PDF,pdf'   
+            'fichier' =>'required|mimes:pdf|',
+            'ecole_id' =>'required|min:1'  
             
         ]);
+        
         if($this->fichier!==null ){
             $extensiValide = array("PDF","pdf");
             $fichiers = $this->fichier->store('public/fiche_orientation');
@@ -70,8 +74,8 @@ class StudentIndex extends Component
             
             if(in_array((pathinfo($this->fichier, PATHINFO_EXTENSION)),$extensiValide)){
         
-                if(!Student::where('matricule', $this->matricule)->exists()){
-                    Student::create($validate);
+                if(!eleve::where('matricule', $this->matricule)->exists()){
+                    eleve::create($validate);
                     session()->flash("success", "Enregistrement effectué avec succès");
                     $this->resetInput();
                     
@@ -96,9 +100,11 @@ class StudentIndex extends Component
     public function render()
     {
         return view('livewire.student-index', [
-            'students'=> Student::where($this->orderField, 'LIKE', '%'.$this->search.'%')
+            'students'=> eleve::where($this->orderField, 'LIKE', '%'.$this->search.'%')
             ->orderBy($this->orderField, $this->orderDirection)
-            ->paginate(10)
+            ->paginate(10),
+            
+            'ecole'=>ecole::select('id','NOMCOMPLs')->get()
             
         ]);
     }

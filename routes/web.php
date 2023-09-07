@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\test;
+use App\Livewire\Drenindex;
+use App\Livewire\EtablissementIndex;
 use App\Livewire\StudentIndex;
 use Illuminate\Support\Facades\Route;
 
@@ -29,3 +32,6 @@ Route::middleware([
 });
 
 Route::get('/student',StudentIndex::class)->name('student')->middleware('auth');
+Route::get('/dren',Drenindex::class)->name('dren')->middleware('auth');
+Route::get('/etablissement',EtablissementIndex::class)->name('etablissement')->middleware('auth');
+Route::get('/test', [test::class, 'index']);

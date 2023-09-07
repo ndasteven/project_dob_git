@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Dren extends Model
+class dren extends Model
 {
     use HasFactory;
-    public $primaryKey = 'code_dren';
-    public $incrementing = false;
     protected $fillable = [
         'code_dren','nom_dren'
     ];
+    public function dren_ecole(){
+        return $this->hasMany(ecole::class,'CODE_DREN', 'code_dren');
+    }
 }

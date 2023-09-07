@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Dren;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,14 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('drens', function (Blueprint $table) {
-            $table->integer('code_dren')->primary()->unique();
+            $table->id();
+            $table->integer('code_dren')->unique();
             $table->string('nom_dren');
-            $table->timestamps();  
+            $table->timestamps();
         });
-
-             
-      
-    
     }
 
     /**

@@ -7,12 +7,13 @@
         <!--liste des élèves -->
         <div class="row">
             <div class="col-12 mt-4">
-                <div class=" mb-4   ">
-                    <input placeholder="rechercher"  type="search" wire:model='search' class="form-control" wire:keydown.debounce.800ms='research' />
+                <div class=" mb-4 ">
+                    <input placeholder="rechercher"  type="search" wire:model='search' class="form-control shadow-lg" wire:keydown.debounce.500ms='research'
+                    style="border-radius: 100px" />
                 </div>
                 <small style="font-weight: bold">recherche par matricule : <span style="color: blue">{{$orderField}}</span> </small> 
                
-                <table class="table ">
+                <table class="table shadow-2xl " style="font-size: 12px">
                     <thead>
                       <tr>
                         <th scope="col" wire:click="setOrderField('matricule')" >Matricule @if($orderField=='matricule') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif </th>
@@ -51,9 +52,11 @@
         </div>
         <!--fin liste des élèves -->
         <!-- modal -->
-        @include('livewire.modal_form')
+        @include('livewire.modal_form_students')
         <!--fin modal -->
         {{$students->links()}}
     </div>
+
+   
     
 </div>

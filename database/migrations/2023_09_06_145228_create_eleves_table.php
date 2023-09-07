@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
-            $table->string('matricule')->primary()->unique();
+        Schema::create('eleves', function (Blueprint $table) {
+            $table->id();
+            $table->string('matricule');
             $table->string('nom');
             $table->string('prenom');
             $table->string('genre');
@@ -20,7 +21,6 @@ return new class extends Migration
             $table->date('dateNaissance');
             $table->string('contactParent')->nullable();
             $table->string('fichier');
-            $table->integer('CODE_ETABLISSEMENT');
             $table->timestamps();
         });
     }
@@ -30,7 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('eleves');
     }
-
 };
