@@ -1,4 +1,4 @@
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self> 
+<div class="modal fade" id="modalStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self> 
   <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet" wire:ignore.self>
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js" wire:ignore.self></script>
   <div class="modal-dialog modal-fullscreen">
@@ -90,10 +90,10 @@
                         @error('fichier') {{$message}} @enderror"
                       </div>
                 </div>
-                <div class="col mb-3">
+                <div wire:ignore class="col mb-3">
                   <label for="formFile" class="form-label">Selectionner un etablissement d'origine</label>
                   <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off" >
-                    <option>Sélectionner un établissement d'origine</option>
+                    <option value="">selectionner une école</option>
                     @foreach ($ecole as $item)
                     <option value="{{$item->id}}">{{$item->NOMCOMPLs}}</option>
                     @endforeach
@@ -101,6 +101,16 @@
                   <div class="invalid-feedback">
                     @error('ecole_id')Selectionner un établissement @enderror"
                   </div>
+                  <script>
+                    
+                    new TomSelect("#select-beast",{
+                      create: true,
+                      sortField: {
+                        field: "text",
+                        direction: "asc"
+                      }
+                    });
+                </script>
                 </div>
               
             </div>
@@ -119,13 +129,5 @@
         </div>
       </div>
     </div>
-    <script>
-      new TomSelect("#select-beast",{
-        create: true,
-        sortField: {
-          field: "text",
-          direction: "asc"
-        }
-      });
-  </script>
+
   </div>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\dren;
 use App\Models\ecole;
 use Illuminate\Pagination\Paginator;
 use Livewire\Component;
@@ -44,14 +45,33 @@ class EtablissementIndex extends Component
 
         $validate = $this->validate([
             'CODSERVs'=>'required|min:1|integer',
-            '$NOMCOMPLs'=>'required|min:3', 
-            'GENREs'=>'required|min:3',
-            'CODE_DREN'=>'required|min:3',
-            
+            'NOMCOMPLs'=>'required|min:3', 
+            'GENREs'=>'required|min:1',
+            'CODE_DREN'=>'required:min:1|integer',    
         ]);
  
-        if(!ecole::where('CODSERVs', $this->CODSERVs)->exists() ){
+        if(!ecole::where('CODSERVs', $this->CODSERVs)->exists() || !ecole::where('NOMCOMPLs', $this->CODSERVs)->exists() ){
+            ecole::create($validate);
+            session()->flash("success", "Enregistrement effectué avec succès");
+            $this->resetInput();
             
+        }
+        else
+        {
+            session()->flash('error', 'le code Etablissement existe déjà');
+        }
+
+    }
+    public function updateEtablissement(){
+
+        $validate = $this->validate([
+            'CODSERVs'=>'required|min:1|integer',
+            'NOMCOMPLs'=>'required|min:3', 
+            'GENREs'=>'required|min:1',
+            'CODE_DREN'=>'required:min:1|integer',    
+        ]);
+ 
+        if(!ecole::where('CODSERVs', $this->CODSERVs)->exists() || !ecole::where('NOMCOMPLs', $this->CODSERVs)->exists() ){
             ecole::create($validate);
             session()->flash("success", "Enregistrement effectué avec succès");
             $this->resetInput();
@@ -66,14 +86,16 @@ class EtablissementIndex extends Component
     public function render()
     {
         
+        
         return view('livewire.etablissement-index',[
-            
-            
             'etablissements'=> ecole::where($this->orderField, 'LIKE', '%'.$this->search.'%')
             ->orderBy($this->orderField, $this->orderDirection)
-            ->paginate(10)
-            
-            
+            ->paginate(10),
+
+            'codeDren'=>  dren::select('code_dren','nom_dren')
+            ->orderBy('code_dren', 'ASC')
+            ->get()  
         ]);
+        
     }
 }

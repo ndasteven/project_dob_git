@@ -1,7 +1,7 @@
 <div>
     <div class="container">
         <div class="row d-flex justify-content-end mt-4">
-            <button class="btn btn-primary btn-sm col-5 col-md-1" data-bs-toggle="modal" data-bs-target="#exampleModal">Créer un élève</button>
+            <button class="btn btn-primary btn-sm col-5 col-md-1" data-bs-toggle="modal" data-bs-target="#modalStudent">Créer un élève</button>
         </div>
 
         <!--liste des élèves -->
@@ -38,7 +38,7 @@
                             <td>{{$student->dateNaissance}}</td>
                             <td><button href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="voir la fiche d'orientation"> <i class="bi bi-filetype-pdf" style="color: red"> </a></i></td>
                             <td>
-                            <button class="btn btn-info btn-sm">selectionner</button>
+                            <button class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#modalStudentInfos" wire:click='studentInfo({{$student->id}})'>selectionner</button>
                         </td>
                       </tr> 
                      @endforeach
@@ -51,8 +51,11 @@
             
         </div>
         <!--fin liste des élèves -->
-        <!-- modal -->
+        <!-- modal formulaire inscription-->
         @include('livewire.modal_form_students')
+        <!--fin modal -->
+        <!-- modal formulaire inscription-->
+        @include('livewire.modalStudentInfos')
         <!--fin modal -->
         {{$students->links()}}
     </div>

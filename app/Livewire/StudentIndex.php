@@ -20,6 +20,8 @@ class StudentIndex extends Component
     public $fileName;
     public $search;
     public $icon;
+    public $eleveInfo;
+
     protected $queryString = [
         'search'=> ['except'=>''],
         'orderField'=> ['except'=>'title'],
@@ -33,6 +35,10 @@ class StudentIndex extends Component
     }
     public string $orderField= 'nom';
     public string $orderDirection = 'ASC';
+
+    public function closeStudent(){
+        $this->eleveInfo='';
+    } 
 
     //FONCTION DE FILTRRE
     public function setOrderField(string $nom){
@@ -50,7 +56,10 @@ class StudentIndex extends Component
     private function resetInput(){
         $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->fichier=$this->ecole_id='';
     }
-
+    public function studentInfo($id){
+        $this->eleveInfo= eleve::find($id);
+        
+    }
     public function storeStudent(){
            
         $validate = $this->validate([
@@ -98,13 +107,14 @@ class StudentIndex extends Component
     }
 
     public function render()
-    {
+    { 
         return view('livewire.student-index', [
             'students'=> eleve::where($this->orderField, 'LIKE', '%'.$this->search.'%')
             ->orderBy($this->orderField, $this->orderDirection)
             ->paginate(10),
             
-            'ecole'=>ecole::select('id','NOMCOMPLs')->get()
+            'ecole'=>ecole::select('id','NOMCOMPLs')->get(),
+            
             
         ]);
     }
