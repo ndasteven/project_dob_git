@@ -88,10 +88,10 @@ class EtablissementIndex extends Component
         
         
         return view('livewire.etablissement-index',[
-            'etablissements'=> ecole::where($this->orderField, 'LIKE', '%'.$this->search.'%')
+            'etablissements'=> ecole::with('ecole_dren')->where($this->orderField, 'LIKE', '%'.$this->search.'%')
             ->orderBy($this->orderField, $this->orderDirection)
             ->paginate(10),
-
+            
             'codeDren'=>  dren::select('code_dren','nom_dren')
             ->orderBy('code_dren', 'ASC')
             ->get()  

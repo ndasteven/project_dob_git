@@ -2,10 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Models\dren;
 use App\Models\ecole;
 use App\Models\eleve;
-use App\Models\Student;
-use Illuminate\Pagination\Paginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -16,11 +15,13 @@ class StudentIndex extends Component
     use WithPagination;
     use WithFileUploads;
     protected $paginationTheme = 'bootstrap';
-    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent,  $fichier,$ecole_id ;
+    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent,  $fichier,$ecole_id, $classe, $mo, $serie ;
     public $fileName;
     public $search;
     public $icon;
     public $eleveInfo;
+    public $drenOrigine;
+    public $class;
 
     protected $queryString = [
         'search'=> ['except'=>''],
@@ -38,6 +39,7 @@ class StudentIndex extends Component
 
     public function closeStudent(){
         $this->eleveInfo='';
+   
     } 
 
     //FONCTION DE FILTRRE
@@ -57,27 +59,52 @@ class StudentIndex extends Component
         $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->fichier=$this->ecole_id='';
     }
     public function studentInfo($id){
-        $this->eleveInfo= eleve::find($id);
+        $this->eleveInfo = eleve::with('eleve_ecole')->where('eleves.id',$id)->get();
+        $dren = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole']->CODE_DREN)->get();
+        $this->drenOrigine=$dren[0]->nom_dren;
+        
+        /*
+        $this->eleveInfo= eleve::where('eleves.id',$id)
+        ->join('ecoles', 'eleves.ecole_id', '=', 'ecoles.id')
+        ->join('drens', 'drens.code_dren','=','ecoles.CODE_DREN')
+        ->get() ;
+        */
+       
         
     }
+    public function selectclasse(){
+        if($this->classe=='2nde'){
+            
+        }else{
+            $this->serie = 'NA';
+            $this->mo = 0.00;
+        }
+    }
     public function storeStudent(){
-           
+          
         $validate = $this->validate([
             'matricule'=>'required|min:6',
             'nom'=>'required|min:3',
             'prenom'=>'required|min:6',
+            'classe'=>'required|min:3',
             'genre'=>'required|min:1',
             'tgp'=>'required',
+            'mo'=>'required',
             'dateNaissance'=>'required|date',
             'contactParent'=>'',
-            'fichier' =>'required|mimes:pdf|',
-            'ecole_id' =>'required|min:1'  
+            'fichier' =>'mimes:pdf|',
+            'ecole_id' =>'required|min:1',
+            'serie'=>'required|min:1'  
             
         ]);
         
+        if(!$this->classe=='2nde'){
+            $validate['serie']=$this->serie;
+            $validate['mo']=$this->mo;
+        }
         if($this->fichier!==null ){
             $extensiValide = array("PDF","pdf");
-            $fichiers = $this->fichier->store('public/fiche_orientation');
+            $fichiers = $this->fichier->store('fiche_orientation', 'public');
             $this->fichier= basename($fichiers);
             $validate['fichier'] = $this->fichier;
             
@@ -113,8 +140,7 @@ class StudentIndex extends Component
             ->orderBy($this->orderField, $this->orderDirection)
             ->paginate(10),
             
-            'ecole'=>ecole::select('id','NOMCOMPLs')->get(),
-            
+            'ecole'=>ecole::select('id','NOMCOMPLs')->get(),  
             
         ]);
     }

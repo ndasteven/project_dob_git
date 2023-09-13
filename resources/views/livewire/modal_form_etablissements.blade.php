@@ -42,8 +42,8 @@
                     <label for="validationCustom04" class="form-label">Type</label>
                     <select class="form-select @error('GENREs') is-invalid @enderror " id="validationCustom04" wire:model='GENREs'  >
                       <option selected value="">choisir le type d'établissement</option>
-                      <option value="MI">MI</option>
-                      <option value="F">F</option>
+                      <option value="MI">privé</option>
+                      <option value="F">public</option>
                     </select>
                     <div class="invalid-feedback">
                       veillez selectionner le type d'etablissement.

@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Dren;
-use Illuminate\Pagination\Paginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 

@@ -19,19 +19,18 @@
                         <th scope="col" wire:click="setOrderField('NOMCOMPLs')">Nom établissement @if($orderField=='NOMCOMPLs') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
                         <th scope="col" wire:click="setOrderField('GENREs')">Type  @if($orderField=='GENREs') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
                         <th scope="col" wire:click="setOrderField('CODE_DREN')">Code DREN @if($orderField=='CODE_DREN') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
-                        <th scope="col" wire:click="setOrderField('CODE_DREN')">Nom DREN @if($orderField=='CODE_DREN') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th> 
+                        <th scope="col" >Nom DREN </th> 
                         <th scope="col" >Action</th>
                       </tr>
                     </thead>
                     <tbody>
-
                      @foreach ($etablissements as $etablissement)
                          <tr>
                             <th scope="row">{{$etablissement->CODSERVs}}</th>
                             <td>{{$etablissement->NOMCOMPLs}}</td>
                             <td>{{$etablissement->GENREs}}</td>
                             <td>{{$etablissement->CODE_DREN}}</td>
-                            <td>{{$etablissement->CODE_DREN}}</td>
+                            <td>{{$etablissement['ecole_dren']->nom_dren}}</td>
                             <td>
                                 <button class="btn btn-info btn-sm">selectionner</button>
                             </td>

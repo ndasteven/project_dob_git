@@ -38,17 +38,28 @@
                       Entrer un nom valide
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label for="validationCustom04" class="form-label">Genre</label>
-                    <select class="form-select @error('genre') is-invalid @enderror " id="validationCustom04" wire:model='genre'  >
-                      <option selected value="">choisir le genre de l'élève</option>
-                      <option value="M">Homme</option>
-                      <option value="F">Femme</option>
+                <div class="col-2">
+                    <label for="validationCustom04" class="form-label">classe</label>
+                    <select class="form-select @error('classe') is-invalid @enderror " id="validationCustom04" wire:change='selectclasse' wire:model='classe'  >
+                      <option selected value="">choisir la classe de l'élève</option>
+                      <option value="6eme">6eme</option>
+                      <option value="2nde">2nde</option>
                     </select>
                     <div class="invalid-feedback">
-                      veillez selectionner le genre.
+                      veillez selectionner une classe.
                     </div>
+                </div>
+                <div class="col-2">
+                  <label for="validationCustom04" class="form-label">Genre</label>
+                  <select class="form-select @error('genre') is-invalid @enderror " id="validationCustom04" wire:model='genre'  >
+                    <option selected value="">choisir le genre de l'élève</option>
+                    <option value="M">Masculin</option>
+                    <option value="F">Feminin</option>
+                  </select>
+                  <div class="invalid-feedback">
+                    veillez selectionner une classe.
                   </div>
+              </div>
             </div>
             <div class="row mt-3">
                 <div class="col">
@@ -66,6 +77,24 @@
                     </div>
                 </div>
             </div>
+            @if ($classe=='2nde')
+            <div class="row mt-3">
+              <div class="col">
+                  <label for="validationServer01" class="form-label">Moyenne générale annuelle(MGA)</label>
+                  <input  class="form-control @error('mo') is-invalid @enderror  " id="validationServer01" value="" wire:model='mo'  >
+                  <div class="invalid-feedback">
+                    Entrer un matricule valide
+                  </div>
+              </div>
+              <div class="col">
+                  <label for="validationServer01" class="form-label">Série</label>
+                  <input  class="form-control @error('serie') is-invalid @enderror  " id="validationServer01" value="" wire:model='serie'>
+                  <div class="invalid-feedback">
+                    Entrer une moyenne valide
+                  </div>
+              </div>
+          </div>
+            @endif
             <div class="row mt-3 mb-2">
                 <div class="col">
                     <label for="validationServer01" class="form-label">Date de naissance</label>
