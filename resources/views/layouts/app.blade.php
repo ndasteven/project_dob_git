@@ -39,7 +39,6 @@
             <!-- Page Content -->
             <main>
                 {{ $slot }}
-                <button class="btn btn-primary">hello</button>
             </main>
         </div>
 

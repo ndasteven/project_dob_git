@@ -1,9 +1,14 @@
 <div>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Elèves') }}
+        </h2>
+    </x-slot>
     <div class="container">
         <div class="row d-flex justify-content-end mt-4">
-            <button class="btn btn-primary btn-sm col-5 col-md-1" data-bs-toggle="modal" data-bs-target="#modalStudent">Créer un élève</button>
+            <button class="btn btn-primary btn-sm col-5 col-md-1" data-bs-toggle="modal" data-bs-target="#modalStudent" wire:click='create()'>Créer un élève</button>
         </div>
-       
+        
         <!--liste des élèves -->
         <div class="row">
             <div class="col-12 mt-4">
@@ -49,6 +54,7 @@
             </div>
             {{$students->links()}}
         </div>
+        
         <!--fin liste des élèves -->
         <!-- modal formulaire inscription-->
         @include('livewire.modal_form_students')
@@ -56,8 +62,7 @@
         <!-- modal formulaire inscription-->
         @include('livewire.modalStudentInfos')
         <!--fin modal -->
-        
-        
+
     </div>
 
    

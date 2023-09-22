@@ -2,11 +2,16 @@
   <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet" wire:ignore.self>
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js" wire:ignore.self></script>
   <div class="modal-dialog modal-fullscreen">
-      <div class="modal-content">
+      <div class="modal-content" >
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Enregistrer un élève</h1>
-          <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">@if($creer) Enregistrer un élève @endif @if($edit) Modifier l'élève @endif </h1>
+          @if ($creer)<a  class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click='cancel()'></a>
+          @else
+          <a  class="btn-close" wire:click='cancel()'></a>
+          @endif"
+          
         </div>
+        
         <div class="modal-body">
           <!--Formulaire d'enregistrement-->
           <div class="col-md-10 mx-auto col-12">
@@ -22,8 +27,9 @@
                 </div>
             @endif
             <!--Message alert-->
-            <form wire:submit.prevent='storeStudent()' enctype="multipart/form-data">
-                <div class="row">
+            <form @if ($creer) wire:submit.prevent='storeStudent()' @endif @if ($edit) wire:submit.prevent='updateStudent()' @endif  enctype="multipart/form-data">
+              @csrf  
+              <div class="row">
                 <div class="col">
                     <label for="validationServer01" class="form-label">Nom</label>
                     <input  class="form-control @error('nom') is-invalid @enderror " id="validationServer01" value="" wire:model='nom'  >
@@ -112,15 +118,24 @@
                 </div>
             </div>
             <div class="row mt-4">
-                <div class="mb-3 col">
-                    <label for="formFile" class="form-label">Selectionner la décision</label>
-                    <input class="form-control @error('fichier') is-invalid @enderror" type="file" wire:model='fichier' wire:change='getfilenames' >
+                <div class="mb-3 col row">
+                  
+                  <label for="" style="font-weight: bold">Selectionner la fiche de décision en PDF</label>
+                    <input style="display: none" class="form-control file-select @error('fichier') is-invalid @enderror" type="file" wire:model='fichier' wire:change='getfilenames' id="formFile" >
+                    <a class="btn btn-primary bouton-select-file col" ><i class="bi bi-file-earmark-pdf-fill"></i>Selectionner la décision en PDF</a>
+                    @if (strlen($fichier) > 0)
+                    <a class="col" style="color: blue; font-weight:bolt" href="storage/fiche_orientation/{{$fichier}}" target="_blank" style="margin-top: 50%">
+                      <i class="bi bi-file-earmark-pdf-fill"></i> Voir la fiche de l'élève
+                    </a>
+                    @endif
                     <div class="invalid-feedback">
                         @error('fichier') {{$message}} @enderror"
                       </div>
                 </div>
                 <div wire:ignore class="col mb-3">
                   <label for="formFile" class="form-label">Selectionner un etablissement d'origine</label>
+                  
+                  
                   <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off" >
                     <option value="">selectionner une école</option>
                     @foreach ($ecole as $item)
@@ -130,22 +145,21 @@
                   <div class="invalid-feedback">
                     @error('ecole_id')Selectionner un établissement @enderror"
                   </div>
-                  <script>
-                    
-                    new TomSelect("#select-beast",{
-                      create: true,
-                      sortField: {
-                        field: "text",
-                        direction: "asc"
-                      }
-                    });
-                </script>
+                
                 </div>
               
             </div>
             <div class="row">
-                <button class="btn btn-success col-12" >
-                    Valider l'enregistrement
+              
+                <button class="btn btn-success col-12 " >
+                  
+                  @if($creer)
+                  Valider l'enregistrement de l'eleve
+                  @endif
+                  @if($edit)
+                  Modifier les informations de l'eleve
+                  @endif
+                    .
                 </button>
             </div>
             </form>
@@ -158,5 +172,48 @@
         </div>
       </div>
     </div>
-
+<!--composant de loading permettant de patientez pendant chargement des datas provenant du controller livewire-->
+@include('livewire.loading')
+<!--fin loading -->
   </div>
+       
+<script>
+  $(document).ready(function() {
+    var select = new TomSelect("#select-beast",{
+    create: true,
+    sortField: {
+    field: "text",
+    direction: "asc"
+    }
+    });
+    
+$('#modalStudent').on('shown.bs.modal', function () {
+  
+    var i=0
+      // Le modal est maintenant visible (actif) charger la valeur de ecole dans tom-select
+       var check= setInterval(() => {
+          select.addItem(@this.ecole_id);
+          if (@this.ecole_id!==null) {
+            i++
+          }
+          if(i>0){
+            clearInterval(check)//arrete la varible check 
+          } 
+       }, 20);
+
+       
+  });
+
+    
+    $('.bouton-select-file').on('click', function(e){
+      
+      $('.file-select').click()
+    })
+    
+    $(('.btn-close')).on('click', function(e){
+      $('#modalStudent').modal('hide')  
+      $('#modalStudentInfos').modal('show') 
+    })
+});
+
+</script>

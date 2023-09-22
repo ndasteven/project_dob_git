@@ -8,6 +8,7 @@ use App\Models\eleve;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 
 class StudentIndex extends Component
@@ -15,14 +16,16 @@ class StudentIndex extends Component
     use WithPagination;
     use WithFileUploads;
     protected $paginationTheme = 'bootstrap';
-    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent,  $fichier,$ecole_id, $classe, $mo, $serie ;
+    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent,  $fichier, $ecole_id, $classe, $mo, $serie ;
     public $fileName;
     public $search;
     public $icon;
     public $eleveInfo;
     public $drenOrigine;
     public $class;
-
+    public $creer;
+    public $edit;
+    public $id_eleve;
     protected $queryString = [
         'search'=> ['except'=>''],
         'orderField'=> ['except'=>'title'],
@@ -54,9 +57,38 @@ class StudentIndex extends Component
         }
        
     }
-
+    public function create(){
+        $this->creer = true;
+        $this->edit = false;
+    }
+    public function update($id){
+        $this->id_eleve=$id;
+        $this->creer = false;
+        $this->edit = true;
+        $eleveupdate = eleve::findOrFail($id);
+        $this->matricule = $eleveupdate->matricule;
+        $this->nom = $eleveupdate->nom  ;
+        $this->prenom = $eleveupdate->prenom  ;
+        $this->classe = $eleveupdate->classe  ;
+        $this->genre = $eleveupdate->genre  ;
+        $this->tgp = $eleveupdate->tgp  ;
+        $this->mo = $eleveupdate->mo  ;
+        $this->serie = $eleveupdate->serie  ;
+        $this->dateNaissance = $eleveupdate->dateNaissance  ;
+        $this->contactParent = $eleveupdate->contactParent  ;
+        $this->ecole_id = $eleveupdate->ecole_id;
+        $this->fichier = $eleveupdate->fichier; 
+        
+    }
+    
+    public function cancel(){
+        $this->creer =false;
+        $this->edit = false;
+        $this->resetInput();
+    }
     private function resetInput(){
-        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->fichier=$this->ecole_id='';
+        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->ecole_id=$this->classe=$this->mo=$this->serie='';
+        $this->fichier = null;
     }
     public function studentInfo($id){
         $this->eleveInfo = eleve::with('eleve_ecole')->where('eleves.id',$id)->get();
@@ -92,7 +124,7 @@ class StudentIndex extends Component
             'mo'=>'required',
             'dateNaissance'=>'required|date',
             'contactParent'=>'',
-            'fichier' =>'mimes:pdf|',
+            'fichier' =>'required|file|mimes:pdf|max:4000',
             'ecole_id' =>'required|min:1',
             'serie'=>'required|min:1'  
             
@@ -109,7 +141,7 @@ class StudentIndex extends Component
             $validate['fichier'] = $this->fichier;
             
             if(in_array((pathinfo($this->fichier, PATHINFO_EXTENSION)),$extensiValide)){
-        
+                
                 if(!eleve::where('matricule', $this->matricule)->exists()){
                     eleve::create($validate);
                     session()->flash("success", "Enregistrement effectué avec succès");
@@ -128,7 +160,52 @@ class StudentIndex extends Component
 
         
     }
-
+    public function updateStudent(){
+        $validate = $this->validate([
+            'matricule'=>'required|min:6',
+            'nom'=>'required|min:3',
+            'prenom'=>'required|min:6',
+            'classe'=>'required|min:3',
+            'genre'=>'required|min:1',
+            'tgp'=>'required',
+            'mo'=>'required',
+            'dateNaissance'=>'required|date',
+            'contactParent'=>'',
+            'fichier' =>'',
+            'ecole_id' =>'required|min:1',
+            'serie'=>'required|min:1'      
+        ]);
+        if(!$this->classe=='2nde'){
+            $validate['serie']=$this->serie;
+            $validate['mo']=$this->mo;
+        }
+        $eleveupdate = eleve::find($this->id_eleve);
+        if($this->fichier===$eleveupdate->fichier){ // on verifie si la valeur dufichier a changer dans le input file
+            if($eleveupdate->update($validate)){
+                session()->flash("success", "Mise à jour effectué avec succès");
+            }else{
+                session()->flash("error", "Erreur de mise à jour");
+            } 
+        }else{
+            
+            $extensiValide = array("PDF","pdf");
+            
+            Storage::disk('public')->delete('fiche_orientation/'.$eleveupdate->fichier);//supprime la precedente fiche
+            $fichiers = $this->fichier->store('fiche_orientation', 'public');
+            $this->fichier= basename($fichiers);
+            $validate['fichier'] = $this->fichier;
+            if(in_array((pathinfo($this->fichier, PATHINFO_EXTENSION)),$extensiValide)){
+                if($eleveupdate->update($validate)){
+                    session()->flash("success", "Mise à jour effectué avec succès");
+                }else{
+                    session()->flash("error", "Erreur de mise à jour");
+                }
+            }else{
+                $this->fileName='erreur de fichier! selectionner le bon fichier';
+            }
+        }
+        
+    }
     public function show(){
 
     }

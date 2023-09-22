@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalStudentInfos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self> 
    
   <div class="modal-dialog modal-fullscreen">
-      <div class="modal-content" style="background-color: #e2e8f0">
+      <div class="modal-content" style="background-color: #f4f7f7">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">INFORMATIONS SUR L'ELEVE</h1>
           <button  class="btn-close" wire:click='closeStudent' data-bs-dismiss="modal" aria-label="Close"></button>
@@ -174,9 +174,12 @@
                                   @endif
                                 @endif
                                 <hr>
+                                
                                 <div class="row mb-3 mt-2">
                                   <div class="col-sm-12">
-                                    <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edit</a>
+                                    @if ($eleveInfo)
+                                    <a class="btn btn-info " data-bs-toggle="modal" data-bs-target="#modalStudent" wire:click='update({{$eleveInfo->id}})'>Modifier</a>
+                                    @endif
                                   </div>
                                 </div>
                               </div>
@@ -306,5 +309,7 @@
         </div>
       </div>
     </div>
-
+<!--composant de loading permettant de patientez pendant chargement des datas provenant du controller livewire-->
+@include('livewire.loading')
+<!--fin loading -->
   </div>
