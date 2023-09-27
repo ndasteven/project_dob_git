@@ -32,7 +32,14 @@ class StudentIndex extends Component
         'oderDirection'=> ['except'=>'ASC']
     ];
     public function research(){
-        $this->search = $this->search; 
+        $this->search = $this->search;
+        $this->nom = $this->nom;
+        $this->prenom = $this->prenom; 
+        $this->genre = $this->genre;
+        $this->dateNaissance = $this->dateNaissance;
+        $this->matricule = $this->matricule;
+        $this->classe = $this->classe;
+        $this->serie = $this->serie;
     }
     public function getfilenames(){
         $this->fileName ='file name : ' ;
@@ -60,6 +67,7 @@ class StudentIndex extends Component
     public function create(){
         $this->creer = true;
         $this->edit = false;
+        $this->resetInput();
     }
     public function update($id){
         $this->id_eleve=$id;
@@ -214,6 +222,12 @@ class StudentIndex extends Component
     { 
         return view('livewire.student-index', [
             'students'=> eleve::where($this->orderField, 'LIKE', '%'.$this->search.'%')
+            ->where('nom', 'LIKE', '%'.$this->nom.'%')
+            ->where('prenom', 'LIKE', '%'.$this->prenom.'%')
+            ->where('matricule', 'LIKE', '%'.$this->matricule.'%')
+            ->where('dateNaissance', 'LIKE', '%'.$this->dateNaissance.'%')
+            ->where('serie', 'LIKE', '%'.$this->serie.'%')
+            ->where('classe', 'LIKE', '%'.$this->classe.'%')
             ->orderBy($this->orderField, $this->orderDirection)
             ->paginate(10),
             

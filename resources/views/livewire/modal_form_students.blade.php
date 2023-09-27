@@ -63,7 +63,7 @@
                     <option value="F">Feminin</option>
                   </select>
                   <div class="invalid-feedback">
-                    veillez selectionner une classe.
+                    veillez selectionner le sexe de l'élève.
                   </div>
               </div>
             </div>
@@ -92,13 +92,22 @@
                     Entrer un matricule valide
                   </div>
               </div>
-              <div class="col">
-                  <label for="validationServer01" class="form-label">Série</label>
-                  <input  class="form-control @error('serie') is-invalid @enderror  " id="validationServer01" value="" wire:model='serie'>
-                  <div class="invalid-feedback">
-                    Entrer une moyenne valide
-                  </div>
-              </div>
+              
+              <div class="col-2">
+                <label for="validationCustom04" class="form-label">Série</label>
+                <select class="form-select @error('serie') is-invalid @enderror " id="validationCustom04"  wire:model='serie'  >
+                  <option selected value="">choisir la série</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                </select>
+                <div class="invalid-feedback">
+                  veillez selectionner une série.
+                </div>
+            </div>
           </div>
             @endif
             <div class="row mt-3 mb-2">
@@ -121,7 +130,7 @@
                 <div class="mb-3 col row">
                   
                   <label for="" style="font-weight: bold">Selectionner la fiche de décision en PDF</label>
-                    <input style="display: none" class="form-control file-select @error('fichier') is-invalid @enderror" type="file" wire:model='fichier' wire:change='getfilenames' id="formFile" >
+                    <input style="display:" class="form-control file-select @error('fichier') is-invalid @enderror" type="file" wire:model='fichier' wire:change='getfilenames' id="formFile" >
                     <a class="btn btn-primary bouton-select-file col" ><i class="bi bi-file-earmark-pdf-fill"></i>Selectionner la décision en PDF</a>
                     @if (strlen($fichier) > 0)
                     <a class="col" style="color: blue; font-weight:bolt" href="storage/fiche_orientation/{{$fichier}}" target="_blank" style="margin-top: 50%">
@@ -136,10 +145,10 @@
                   <label for="formFile" class="form-label">Selectionner un etablissement d'origine</label>
                   
                   
-                  <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off" >
+                  <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off" style="z-index: 2;" >
                     <option value="">selectionner une école</option>
                     @foreach ($ecole as $item)
-                    <option value="{{$item->id}}">{{$item->NOMCOMPLs}}</option>
+                    <option value="{{$item->id}}" style="z-index: 1;" >{{$item->NOMCOMPLs}}</option>
                     @endforeach
                   </select>
                   <div class="invalid-feedback">
