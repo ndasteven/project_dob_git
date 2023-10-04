@@ -132,11 +132,7 @@
                   <label for="" style="font-weight: bold">Selectionner la fiche de décision en PDF</label>
                     <input style="display:" class="form-control file-select @error('fichier') is-invalid @enderror" type="file" wire:model='fichier' wire:change='getfilenames' id="formFile" >
                     <a class="btn btn-primary bouton-select-file col" ><i class="bi bi-file-earmark-pdf-fill"></i>Selectionner la décision en PDF</a>
-                    @if (strlen($fichier) > 0)
-                    <a class="col" style="color: blue; font-weight:bolt" href="storage/fiche_orientation/{{$fichier}}" target="_blank" style="margin-top: 50%">
-                      <i class="bi bi-file-earmark-pdf-fill"></i> Voir la fiche de l'élève
-                    </a>
-                    @endif
+                    
                     <div class="invalid-feedback">
                         @error('fichier') {{$message}} @enderror"
                       </div>

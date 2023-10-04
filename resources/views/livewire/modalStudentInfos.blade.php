@@ -97,7 +97,12 @@
                                   </div>
                                   <div class="col-sm-9 text-secondary">
                                       @if ($eleveInfo)
-                                      {{$eleveInfo->dateNaissance}}
+                                      @if ($eleveInfo->dateNaissance=='0000-01-01')
+                                        NA
+                                      @else
+                                        {{$eleveInfo->dateNaissance}}
+                                      @endif
+                                      
                                       @else
                                       <p class="placeholder-glow col-5">
                                           <span class="placeholder col-1 "></span>/<span class="placeholder col-1 "></span>/<span class="placeholder col-4 "></span>
@@ -128,7 +133,12 @@
                                   </div>
                                   <div class="col-sm-9 text-secondary">
                                       @if ($eleveInfo)
+                                      @if ($eleveInfo->tgp==1)
+                                      NA
+                                      @else
                                       {{$eleveInfo->tgp}}
+                                      @endif
+                                      
                                       @else
                                       <span class="placeholder col-3 "></span>
                                       @endif

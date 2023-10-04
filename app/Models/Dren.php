@@ -14,4 +14,7 @@ class dren extends Model
     public function dren_ecole(){
         return $this->hasMany(ecole::class,'CODE_DREN', 'code_dren');
     }
+    public function dren_fiche(){
+        return $this->hasMany(fiche::class);
+    }
 }

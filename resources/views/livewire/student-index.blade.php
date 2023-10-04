@@ -158,8 +158,13 @@
                             <td>{{$student->prenom}}</td>
                             <td class="d-none d-sm-block">{{$student->genre}}</td>
                             <td>{{$student->classe}} @if ($student->classe=='2nde')( {{$student->serie}} )   @endif</td>
-                            <td class="d-none d-sm-block">{{$student->dateNaissance}}</td>
-                            <td><a href="storage/fiche_orientation/{{$student->fichier}}" target="_blank"><button href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="voir la fiche d'orientation"> <i class="bi bi-filetype-pdf" style="color: red"></i></button></a></td>
+                            @if ($student->dateNaissance=='0000-01-01')
+                            <td class="d-none d-sm-block">NA</td>
+                            @else
+                            <td class="d-none d-sm-block">{{$student->dateNaissance}}</td>    
+                            @endif
+                            
+                            <td><a href="storage/fiche_orientation/" target="_blank"><button href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="voir la fiche d'orientation"> <i class="bi bi-filetype-pdf" style="color: red"></i></button></a></td>
                             <td class="d-none d-sm-block">
                             <button class="btn btn-sm "  data-bs-toggle="modal" data-bs-target="#modalStudentInfos" wire:click='studentInfo({{$student->id}})' style="background-color: #39b315;color:#fff">selectionner</button>
                         </td>

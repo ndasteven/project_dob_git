@@ -34,6 +34,12 @@
                         {{ __('Etablissements') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link href="{{ route('fiche') }}" :active="request()->routeIs('fiche')">
+                        {{ __('Fiches orientations') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -176,6 +182,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('etablissement') }}" :active="request()->routeIs('etablissement')">
                 {{ __('Etablissements') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link href="{{ route('fiche') }}" :active="request()->routeIs('fiche')">
+                {{ __('Fiches orientation') }}
             </x-responsive-nav-link>
         </div>
 

@@ -36,6 +36,7 @@
                             <td>{{$etablissement->GENREs}}</td>
                             <td>{{$etablissement->CODE_DREN}}</td>
                             <td>{{$etablissement['ecole_dren']->nom_dren}}</td>
+                            
                             <td>
                                 <button class="btn btn-info btn-sm">selectionner</button>
                             </td>
