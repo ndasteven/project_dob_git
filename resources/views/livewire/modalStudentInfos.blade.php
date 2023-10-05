@@ -204,15 +204,15 @@
                               <div class="col-sm-6 mb-3">
                                 <div class="card h-100">
                                   <div class="card-body">
-                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">Etablissement d'origine:</i> <span style="font-size: 12px">{{$eleveInfo['eleve_ecole']->NOMCOMPLs}}</span>  </h6>
+                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">Etablissement d'origine:</i> <span style="font-size: 12px">{{$eleveInfo['eleve_ecole_O']->NOMCOMPLs}}</span>  </h6>
                                     <small style="font-weight: bold">CODE établissement</small>
                                     <div style="margin-bottom: 10px">
-                                      <span >{{$eleveInfo['eleve_ecole']->CODSERVs}}</span>
+                                      <span >{{$eleveInfo['eleve_ecole_O']->CODSERVs}}</span>
                                     </div>
                                     <hr>
                                     <small style="font-weight: bold">CODE DREN</small>
                                     <div style="margin-bottom: 10px">
-                                      <span >{{$eleveInfo['eleve_ecole']->CODE_DREN}}</span>
+                                      <span >{{$eleveInfo['eleve_ecole_O']->CODE_DREN}}</span>
                                     </div>
                                     <hr>
                                     <small style="font-weight: bold">Nom DREN</small>

@@ -64,11 +64,12 @@
                         </div>
                     </div>
                     <div wire:ignore class="col">
-                        <label for="formFile" class="form-label">Selectionner une DREN</label>
+                        <label for="formFile" class="form-label">Selectionner la DREN de la fiche</label>
                         <select class="form-select  @error('dren_id') is-invalid @enderror" id="select-dren" wire:model='dren_id' autocomplete="off" >
                             <option value="">selectionner le code DREN</option>
                             @foreach ($codeDren as $item)
-                            <option value="{{$item->code_dren}}">{{$item->code_dren}}-{{$item->nom_dren}}</option>
+                            @dump($item)
+                            <option value="{{$item->id}}">{{$item->code_dren}}-{{$item->nom_dren}}</option>
                             @endforeach
                         </select>
                         <div class="invalid-feedback">
@@ -76,7 +77,7 @@
                         </div>
                     </div>
                     <div wire:ignore class="col mb-3">
-                        <label for="formFile" class="form-label">Selectionner un etablissement d'origine</label>
+                        <label for="formFile" class="form-label">Selectionner l'etablissement de la fiche</label>
                         <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off" style="z-index: 2;" >
                           <option value="">selectionner une école</option>
                           @foreach ($ecole as $item)

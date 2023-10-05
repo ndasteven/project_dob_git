@@ -135,7 +135,6 @@
                     </div>
                 </div>
                 <small style="font-weight: bold">recherche par  : <span style="color: blue">{{$orderField}}</span> </small> 
-               
                 <table class="table shadow-2xl col-12 container-fluid" style="font-size: 12px">
                     <thead>
                       <tr>
@@ -144,13 +143,12 @@
                         <th scope="col-1" wire:click="setOrderField('prenom')">Prenom @if($orderField=='prenom') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
                         <th scope="col-1" wire:click="setOrderField('genre')" class="d-none d-sm-block">Genre @if($orderField=='genre') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
                         <th scope="col-1" wire:click="setOrderField('classe')">Classe @if($orderField=='classe') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th> 
-                        <th scope="col-1" wire:click="setOrderField('dateNaissance')" class="d-none d-sm-block">date naissance</th>
+                        <th scope="col-1" wire:click="setOrderField('dateNaissance')" class="d-none d-sm-block">Ecole</th>
                         <th scope="col-1" >Fiches</th>
                         <th scope="col-1" class="d-none d-sm-block">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-
                      @foreach ($students as $student)
                          <tr>
                             <th scope="row">{{$student->matricule}}</th>
@@ -158,12 +156,8 @@
                             <td>{{$student->prenom}}</td>
                             <td class="d-none d-sm-block">{{$student->genre}}</td>
                             <td>{{$student->classe}} @if ($student->classe=='2nde')( {{$student->serie}} )   @endif</td>
-                            @if ($student->dateNaissance=='0000-01-01')
-                            <td class="d-none d-sm-block">NA</td>
-                            @else
-                            <td class="d-none d-sm-block">{{$student->dateNaissance}}</td>    
-                            @endif
-                            
+                            {{----}}
+                            <td class="d-none d-sm-block"></td>                                
                             <td><a href="storage/fiche_orientation/" target="_blank"><button href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="voir la fiche d'orientation"> <i class="bi bi-filetype-pdf" style="color: red"></i></button></a></td>
                             <td class="d-none d-sm-block">
                             <button class="btn btn-sm "  data-bs-toggle="modal" data-bs-target="#modalStudentInfos" wire:click='studentInfo({{$student->id}})' style="background-color: #39b315;color:#fff">selectionner</button>

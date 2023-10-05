@@ -8,7 +8,7 @@
         <div class="row d-flex justify-content-end mt-4">
             <button class="btn btn-primary btn-sm col-5 col-md-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une fiche</button>
         </div>
-
+        
         <!--liste des fiche -->
         <div class="row">
             <div class="col-12 mt-4">
@@ -30,8 +30,8 @@
                     </thead>
                     <tbody>
                      @foreach ($fiche as $item)
+                     
                          <tr>
-                            
                             <td>{{$item['fiche_ecole']->NOMCOMPLs}}</td>
                             <td>{{$item['fiche_dren']->nom_dren}}</td>
                             <td>{{$item->annee}}</td>

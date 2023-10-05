@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\dren;
 use App\Models\ecole;
 use App\Models\eleve;
+use App\Models\fiche;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -16,7 +17,7 @@ class StudentIndex extends Component
     use WithPagination;
     use WithFileUploads;
     protected $paginationTheme = 'bootstrap';
-    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent, $ecole_id, $classe, $mo, $serie ;
+    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent, $ecole_id,$ecole_A, $classe, $mo, $serie, $fiche_id ;
     public $fileName;
     public $search;
     public $icon;
@@ -85,7 +86,8 @@ class StudentIndex extends Component
         $this->dateNaissance = $eleveupdate->dateNaissance  ;
         $this->contactParent = $eleveupdate->contactParent  ;
         $this->ecole_id = $eleveupdate->ecole_id;
-       
+        $this->ecole_A = $eleveupdate->ecole_A;
+        $this->fiche_id = $eleveupdate->fiche_id;
         
     }
     
@@ -95,12 +97,12 @@ class StudentIndex extends Component
         $this->resetInput();
     }
     private function resetInput(){
-        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->ecole_id=$this->classe=$this->mo=$this->serie='';
+        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->ecole_id=$this->ecole_A=$this->classe=$this->mo=$this->serie=$this->fiche_id='';
         
     }
     public function studentInfo($id){
-        $this->eleveInfo = eleve::with('eleve_ecole')->where('eleves.id',$id)->get();
-        $dren = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole']->CODE_DREN)->get();
+        $this->eleveInfo = eleve::with('eleve_ecole_O')->where('eleves.id',$id)->get();
+        $dren = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole_O']->CODE_DREN)->get();
         $this->drenOrigine=$dren[0]->nom_dren;
         
         /*
@@ -133,7 +135,9 @@ class StudentIndex extends Component
             'dateNaissance'=>'',
             'contactParent'=>'',
             'ecole_id' =>'required|min:1',
-            'serie'=>'required|min:1'  
+            'ecole_A' =>'required|min:1',
+            'serie'=>'required|min:1',
+            'fiche_id' =>'required|min:1',  
             
         ]);
         
@@ -176,7 +180,9 @@ class StudentIndex extends Component
             'dateNaissance'=>'',
             'contactParent'=>'',
             'ecole_id' =>'required|min:1',
-            'serie'=>'required|min:1'      
+            'ecole_A' =>'required|min:1',
+            'serie'=>'required|min:1',
+            'fiche_id' =>'required|min:1',     
         ]);
         if(!$this->classe=='2nde'){
             $validate['serie']=$this->serie;
@@ -198,6 +204,7 @@ class StudentIndex extends Component
     { 
         return view('livewire.student-index', [
             'students'=> eleve::where($this->orderField, 'LIKE', '%'.$this->search.'%')
+            ->with('eleve_ecole_A')
             ->where('nom', 'LIKE', '%'.$this->nom.'%')
             ->where('prenom', 'LIKE', '%'.$this->prenom.'%')
             ->where('matricule', 'LIKE', '%'.$this->matricule.'%')
@@ -207,7 +214,8 @@ class StudentIndex extends Component
             ->orderBy($this->orderField, $this->orderDirection)
             ->paginate(10),
             
-            'ecole'=>ecole::select('id','NOMCOMPLs')->get(),  
+            'ecole'=>ecole::select('id','NOMCOMPLs')->get(), 
+            'fiche'=> fiche::with('fiche_ecole')->with('fiche_dren')->get()
             
         ]);
     }

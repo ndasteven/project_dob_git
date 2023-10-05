@@ -80,7 +80,7 @@ class FicheIndex extends Component
             'fiche'=> fiche::with('fiche_ecole')->with('fiche_dren')->where($this->orderField, 'LIKE', '%'.$this->search.'%')->paginate(10),
             
             'ecole'=>ecole::select('id','NOMCOMPLs')->get(),
-            'codeDren'=>  dren::select('code_dren','nom_dren')
+            'codeDren'=>  dren::select('id','code_dren','nom_dren')
             ->orderBy('code_dren', 'ASC')
             ->get()  
         ]);

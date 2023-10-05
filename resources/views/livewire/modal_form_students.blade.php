@@ -82,6 +82,14 @@
                       Entrer une moyenne valide
                     </div>
                 </div>
+                <div class="col">
+                  <label for="validationServer01" class="form-label">Date de naissance</label>
+                  <input type="date"  class="form-control @error('dateNaissance') is-invalid @enderror " id="validationServer01" value="" wire:model='dateNaissance'  >
+                  <div class="invalid-feedback">
+                    Entrer une date valide
+                  </div>
+                </div>
+                
             </div>
             @if ($classe=='2nde')
             <div class="row mt-3">
@@ -110,62 +118,65 @@
             </div>
           </div>
             @endif
-            <div class="row mt-3 mb-2">
-                <div class="col">
-                    <label for="validationServer01" class="form-label">Date de naissance</label>
-                    <input type="date"  class="form-control @error('dateNaissance') is-invalid @enderror " id="validationServer01" value="" wire:model='dateNaissance'  >
-                    <div class="invalid-feedback">
-                      Entrer une date valide
-                    </div>
+            
+            <style>
+              .disabled{
+                opacity: 0.8;
+              }
+            </style>
+            <div class="row mt-4" wire:loading.class="disabled">
+              <div wire:ignore class="col mb-3">
+                <label for="formFile" class="form-label">Selectionner un etablissement d'origine</label>
+                <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off">
+                  <option value="">selectionner l'école d'origine</option>
+                  @foreach ($ecole as $item)
+                  <option value="{{$item->id}}" style="z-index: 1;" >{{$item->NOMCOMPLs}}</option>
+                  @endforeach
+                </select>
+                <div class="invalid-feedback">
+                  @error('ecole_id')Selectionner un établissement d'origine @enderror"
                 </div>
-                <div class="col ">
-                    <label for="validationServer01" class="form-label @error('contactParent') is-invalid @enderror ">Contact du parent</label>
-                    <input  class="form-control " id="validationServer01" wire:model='contactParent' value="" >
-                    <div class="invalid-feedback">
-                      Entrer une moyenne valide
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="mb-3 col row">
-                  
-                  <label for="" style="font-weight: bold">Selectionner la fiche de décision en PDF</label>
-                    <input style="display:" class="form-control file-select @error('fichier') is-invalid @enderror" type="file" wire:model='fichier' wire:change='getfilenames' id="formFile" >
-                    <a class="btn btn-primary bouton-select-file col" ><i class="bi bi-file-earmark-pdf-fill"></i>Selectionner la décision en PDF</a>
-                    
-                    <div class="invalid-feedback">
-                        @error('fichier') {{$message}} @enderror"
-                      </div>
-                </div>
+              
+              </div>
                 <div wire:ignore class="col mb-3">
-                  <label for="formFile" class="form-label">Selectionner un etablissement d'origine</label>
-                  
-                  
-                  <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off" style="z-index: 2;" >
-                    <option value="">selectionner une école</option>
+                  <label for="formFile" class="form-label">Selectionner un etablissement d'accueil</label>
+                  <select class="form-select @error('ecole_A') is-invalid @enderror" id="select-beast-1" wire:model='ecole_A' autocomplete="off">
+                    <option value="">selectionner l'école d'accueil</option>
                     @foreach ($ecole as $item)
                     <option value="{{$item->id}}" style="z-index: 1;" >{{$item->NOMCOMPLs}}</option>
                     @endforeach
                   </select>
                   <div class="invalid-feedback">
-                    @error('ecole_id')Selectionner un établissement @enderror"
+                    @error('ecole_A')Selectionner un établissement accueil @enderror"
                   </div>
                 
                 </div>
               
             </div>
+            <div wire:ignore class="col mb-3" wire:loading.class="disabled">
+              <label for="formFile" class="form-label">Selectionner la fiche d'orientation de l'élève</label>
+              <select class="form-select @error('fiche_id') is-invalid @enderror" id="select-beast-2" wire:model='fiche_id' autocomplete="off">
+                <option value="">selectionner l'école d'accueil</option>fiche_ecole
+                @foreach ($fiche as $item)
+                <option value="{{$item->id}}" style="z-index: 1;" >{{$item->nom}} | {{$item->classe}} | {{$item->annee}} | {{$item['fiche_ecole']->NOMCOMPLs}} | {{$item['fiche_dren']->nom_dren}}  </option>
+                @endforeach
+              </select>
+              <div class="invalid-feedback">
+                @error('fiche_id')Selectionner un établissement accueil @enderror"
+              </div>
+            </div>
+
             <div class="row">
-              
+              <div class="col">
                 <button class="btn btn-success col-12 " >
-                  
                   @if($creer)
                   Valider l'enregistrement de l'eleve
                   @endif
                   @if($edit)
                   Modifier les informations de l'eleve
-                  @endif
-                    .
+                  @endif.
                 </button>
+              </div>  
             </div>
             </form>
           </div>
@@ -185,6 +196,22 @@
 <script>
   $(document).ready(function() {
     var select = new TomSelect("#select-beast",{
+    create: true,
+    sortField: {
+    field: "text",
+    direction: "asc"
+    }
+    });
+
+    var select = new TomSelect("#select-beast-1",{
+    create: true,
+    sortField: {
+    field: "text",
+    direction: "asc"
+    }
+    });
+
+    var select = new TomSelect("#select-beast-2",{
     create: true,
     sortField: {
     field: "text",
