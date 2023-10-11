@@ -75,13 +75,25 @@
                       Entrer un matricule valide
                     </div>
                 </div>
-                <div class="col">
-                    <label for="validationServer01" class="form-label">Moyenne d'orientation</label>
-                    <input  class="form-control @error('tgp') is-invalid @enderror  " id="validationServer01" value="" wire:model='tgp'>
+                  @if ($classe=='2nde')
+                
+                  <div class="col-2">
+                    <label for="validationCustom04" class="form-label">Série</label>
+                    <select class="form-select @error('serie') is-invalid @enderror " id="validationCustom04"  wire:model='serie'  >
+                      <option selected value="">choisir la série</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                      <option value="G">G</option>
+                    </select>
                     <div class="invalid-feedback">
-                      Entrer une moyenne valide
+                      veillez selectionner une série.
                     </div>
-                </div>
+                  </div>
+                
+                @endif
                 <div class="col">
                   <label for="validationServer01" class="form-label">Date de naissance</label>
                   <input type="date"  class="form-control @error('dateNaissance') is-invalid @enderror " id="validationServer01" value="" wire:model='dateNaissance'  >
@@ -90,45 +102,18 @@
                   </div>
                 </div>
                 
-            </div>
-            @if ($classe=='2nde')
-            <div class="row mt-3">
-              <div class="col">
-                  <label for="validationServer01" class="form-label">Moyenne générale annuelle(MGA)</label>
-                  <input  class="form-control @error('mo') is-invalid @enderror  " id="validationServer01" value="" wire:model='mo'  >
-                  <div class="invalid-feedback">
-                    Entrer un matricule valide
-                  </div>
-              </div>
-              
-              <div class="col-2">
-                <label for="validationCustom04" class="form-label">Série</label>
-                <select class="form-select @error('serie') is-invalid @enderror " id="validationCustom04"  wire:model='serie'  >
-                  <option selected value="">choisir la série</option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="E">E</option>
-                  <option value="F">F</option>
-                  <option value="G">G</option>
-                </select>
-                <div class="invalid-feedback">
-                  veillez selectionner une série.
-                </div>
-            </div>
-          </div>
-            @endif
-            
+            </div>           
             <style>
               .disabled{
                 opacity: 0.8;
               }
             </style>
+            
             <div class="row mt-4" wire:loading.class="disabled">
               <div wire:ignore class="col mb-3">
                 <label for="formFile" class="form-label">Selectionner un etablissement d'origine</label>
                 <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off">
-                  <option value="">selectionner l'école d'origine</option>
+                  <option value="0">selectionner l'école d'origine</option>
                   @foreach ($ecole as $item)
                   <option value="{{$item->id}}" style="z-index: 1;" >{{$item->NOMCOMPLs}}</option>
                   @endforeach
@@ -156,13 +141,13 @@
             <div wire:ignore class="col mb-3" wire:loading.class="disabled">
               <label for="formFile" class="form-label">Selectionner la fiche d'orientation de l'élève</label>
               <select class="form-select @error('fiche_id') is-invalid @enderror" id="select-beast-2" wire:model='fiche_id' autocomplete="off">
-                <option value="">selectionner l'école d'accueil</option>fiche_ecole
+                <option value="">selectionner la fiche d'orientation</option>fiche_ecole
                 @foreach ($fiche as $item)
                 <option value="{{$item->id}}" style="z-index: 1;" >{{$item->nom}} | {{$item->classe}} | {{$item->annee}} | {{$item['fiche_ecole']->NOMCOMPLs}} | {{$item['fiche_dren']->nom_dren}}  </option>
                 @endforeach
               </select>
               <div class="invalid-feedback">
-                @error('fiche_id')Selectionner un établissement accueil @enderror"
+                @error('fiche_id')Selectionner la fiche d'orientation @enderror"
               </div>
             </div>
 

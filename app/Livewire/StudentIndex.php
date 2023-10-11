@@ -28,6 +28,7 @@ class StudentIndex extends Component
     public $creer;
     public $edit;
     public $id_eleve;
+    public $ide;
     protected $queryString = [
         'search'=> ['except'=>''],
         'orderField'=> ['except'=>'title'],
@@ -101,8 +102,10 @@ class StudentIndex extends Component
         $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->ecole_id=$this->ecole_A=$this->classe=$this->mo=$this->serie=$this->fiche_id='';
         
     }
-    public function studentInfo($id){
-        $this->eleveInfo = eleve::with('eleve_ecole_O')->where('eleves.id',$id)->get();
+    
+    public function studentInfo(){
+        $this->eleveInfo = eleve::with('eleve_ecole_O')->where('eleves.id',$this->ide)->get();
+        
         $dren_O = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole_O']->CODE_DREN)->get();
         $this->drenOrigine=$dren_O[0]->nom_dren;
         $dren_A = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole_A']->CODE_DREN)->get();
@@ -208,16 +211,8 @@ class StudentIndex extends Component
         return view('livewire.student-index', [
             'students'=> eleve::where($this->orderField, 'LIKE', '%'.$this->search.'%')
             ->with('eleve_ecole_A')
-            ->with('eleve_fiche')
-            ->where('nom', 'LIKE', '%'.$this->nom.'%')
-            ->where('prenom', 'LIKE', '%'.$this->prenom.'%')
-            ->where('matricule', 'LIKE', '%'.$this->matricule.'%')
-            ->where('dateNaissance', 'LIKE', '%'.$this->dateNaissance.'%')
-            ->where('serie', 'LIKE', '%'.$this->serie.'%')
-            ->where('classe', 'LIKE', '%'.$this->classe.'%')
-            ->orderBy($this->orderField, $this->orderDirection)
-            ->paginate(10),
-            
+            ->with('eleve_fiche')->get(),          
+         
             'ecole'=>ecole::select('id','NOMCOMPLs')->get(), 
             'fiche'=> fiche::with('fiche_ecole')->with('fiche_dren')->get()
             
