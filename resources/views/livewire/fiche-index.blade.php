@@ -36,7 +36,7 @@
                             <td>{{$item['fiche_dren']->nom_dren}}</td>
                             <td>{{$item->annee}}</td>
                             <td>{{$item->classe}}</td>
-                            <td>{{$item->fiche_nom}}</td>
+                            <td>{{$item->nom}}</td>
                             <td>
                                 <button class="btn btn-info btn-sm">selectionner</button>
                             </td>

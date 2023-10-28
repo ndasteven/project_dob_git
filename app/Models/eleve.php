@@ -10,7 +10,7 @@ class eleve extends Model
     use HasFactory;
 
     protected $fillable = [
-        'matricule','nom','prenom','genre','tgp','dateNaissance','contactParent','ecole_id','classe','serie','mo','ecole_A','fiche_id'
+        'matricule','nom','prenom','genre','dateNaissance','ecole_id','classe','serie','ecole_A','fiche_id','annee'
     ];
 
     public function eleve_ecole_O() {

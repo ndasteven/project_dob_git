@@ -17,9 +17,8 @@ return new class extends Migration
             $table->string('nom');
             $table->string('prenom');
             $table->string('genre');
-            $table->double('tgp');
             $table->date('dateNaissance');
-            $table->string('contactParent')->nullable();
+            $table->integer('annee');
             $table->timestamps();
         });
     }

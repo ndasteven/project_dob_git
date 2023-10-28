@@ -1,3 +1,4 @@
+
 <div class="modal fade" id="modalStudentInfos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self> 
    
   <div class="modal-dialog modal-fullscreen">
@@ -22,10 +23,11 @@
                                   @foreach ($eleveInfo as $eleveInfo)
                                     
                                   @endforeach
+                                  
                                   @if ($eleveInfo->genre=='M')
-                                  <img class="" src="https://cdn0.iconfinder.com/data/icons/professional-avatar-5/48/Junior_Consultant_male_avatar_men_character_professions-512.png" alt="Admin" class="rounded-circle" width="150">
+                                  <img class="" src="asset/img/m.png" width="150">
                                    @else 
-                                   <img class="" src="https://assets.onlinelabels.com/images/clip-art/GDJ/Female%20Avatar%205-277089.png" alt="Admin" class="rounded-circle" width="150">
+                                   <img class="" src="asset/img/f.png" alt="Admin" class="rounded-circle" width="150">
                                   @endif
                                   
                                   <div class="mt-3">
@@ -34,10 +36,13 @@
                                     <p class="text-secondary mb-1">{{$eleveInfo->nom}} {{$eleveInfo->prenom}}</p>
                                     <p class="text-muted font-size-sm">{{$eleveInfo->classe}}</p>
                                     <p class="text-muted font-size-sm">{{$eleveInfo->matricule}}</p>
-                                    
-                                   <a href="storage/fiche_orientation/{{$eleveInfo->fichier}}" target="_blank">
-                                    <button class="btn btn-outline-primary test_click">Voir Fiche</button>
-                                  </a> 
+                                    @if($eleveInfo['eleve_fiche'])
+                                      <a href="storage/fiche_orientation/{{$eleveInfo['eleve_fiche']->fiche_nom}}" target="_blank">
+                                        <button class="btn btn-outline-primary test_click">Voir Fiche</button>
+                                      </a>
+                                    @endif
+                                   
+                                  
                                   </div>
                                   
                                   @else
@@ -56,7 +61,10 @@
                                 </div>
                               </div>
                             </div>
-                 
+                            <div style="text-align: center">
+                              <button class="btn btn-danger btn-sm col-7 mx-auto" id="openModal"><i class="bi bi-trash3"></i> supprimer l'élève</button> 
+                            </div>
+                            
                           </div>
                           <div class="col-md-8">
                             <div class="card mb-3">
@@ -129,16 +137,11 @@
                                 <hr>
                                 <div class="row mb-3 mt-2">
                                   <div class="col-sm-3">
-                                    <h6 class="mb-0">Moyenne d'orientation</h6>
+                                    <h6 class="mb-0">Année d'orientation</h6>
                                   </div>
                                   <div class="col-sm-9 text-secondary">
                                       @if ($eleveInfo)
-                                      @if ($eleveInfo->tgp==1)
-                                      NA
-                                      @else
-                                      {{$eleveInfo->tgp}}
-                                      @endif
-                                      
+                                        {{$eleveInfo->annee}}
                                       @else
                                       <span class="placeholder col-3 "></span>
                                       @endif
@@ -186,21 +189,23 @@
                                 <hr>
                                 
                                 <div class="row mb-3 mt-2">
-                                  <div class="col-sm-12">
+                                  <div class="col-sm-12 d-flex justify-content-between" >
                                     @if ($eleveInfo)
                                     <a class="btn btn-info " data-bs-toggle="modal" data-bs-target="#modalStudent" wire:click='update({{$eleveInfo->id}})'>Modifier</a>
+                                    @endif
+                                    @if ($eleveInfo)
+                                   
                                     @endif
                                   </div>
                                 </div>
                               </div>
                             </div>
-
-
+                            
+                            
                             @if ($eleveInfo)
                             
-                            
-                           
                             <div class="row gutters-sm">
+                              @if ($eleveInfo['eleve_ecole_O'])
                               <div class="col-sm-6 mb-3">
                                 <div class="card h-100">
                                   <div class="card-body">
@@ -223,6 +228,9 @@
                                   </div>
                                 </div>
                               </div>
+                              
+                              @endif
+                              @if ($eleveInfo['eleve_ecole_A'])
                               <div class="col-sm-6 mb-3">
                                 <div class="card h-100">
                                   <div class="card-body">
@@ -245,6 +253,7 @@
                                   </div>
                                 </div>
                               </div>
+                              @endif
                             </div>
                             @else
                             <div class="row gutters-sm placeholder-glow">
@@ -305,11 +314,56 @@
         </div>
         
         <div class="modal-footer">
-         
         </div>
       </div>
+          <!--modal de confirmation de suppression-->
+          
+          <div id="myModals" class="modalDel">
+            <div class="modal-contents">
+              <span id="closeModal" class="closes">&times;</span>
+              <div style="" class="p-3">
+                <h2 style="color: #1a1818; font-weight: bold"  > Suppression de l'élève</h2>
+              </div>
+              
+              <div class="col-md-8 mx-auto">
+                <div class="card shadow-xl mt-3 mb-4">
+                  <div class="card-body">
+                   <p style="font-weight: bold; color:red; text-align:center">Voulez vous supprimer l'élève ?</p> 
+                   <div class="mt-2" style="text-align: center">
+                    <i class="bi bi-exclamation-circle" style="font-size: 70px; color: red" ></i>
+                   </div>
+                   <div class="col-12 mx-auto d-flex justify-content-between mt-4 mb-2">
+                    <button class="btn btn-sm btn-danger col-5 deletes" wire:model="ide" wire:click='deleteStudent({{$ide}})' >confirmer la suppression</button>
+                    <button class="btn btn-sm btn-info col-5 clo">Annuler</button>
+                   </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @include('livewire.loading')
+          </div>
+        <!--fin modal de confirmation de suppression-->
     </div>
-<!--composant de loading permettant de patientez pendant chargement des datas provenant du controller livewire-->
-@include('livewire.loading')
-<!--fin loading -->
-  </div>
+
+    <!--composant de loading permettant de patientez pendant chargement des datas provenant du controller livewire-->
+    @include('livewire.loading')
+    <!--fin loading -->
+</div>
+
+<script>
+  $(document).ready(function() { 
+    $('.deletes').on('click', function(){
+      $("#modalStudentInfos").modal('hide');
+      Swal.fire(
+      'supprimer',
+      'L\'élève a été supprimé avec success',
+      'success'
+      )
+     
+    })
+  })
+</script>
+
+</div>
+
+

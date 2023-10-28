@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::table('eleves', function (Blueprint $table) {
             $table->string('classe');
             $table->string('serie');
-            $table->double('mo');
            
         });
     }

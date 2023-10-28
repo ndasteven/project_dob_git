@@ -10,14 +10,18 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Searchable;
+
+
 
 
 class StudentIndex extends Component
 {
     use WithPagination;
     use WithFileUploads;
+    
     protected $paginationTheme = 'bootstrap';
-    public $matricule, $nom, $prenom, $genre, $tgp, $dateNaissance, $contactParent, $ecole_id,$ecole_A, $classe, $mo, $serie, $fiche_id ;
+    public $matricule, $nom, $prenom, $genre, $dateNaissance, $ecole_id,$ecole_A, $classe, $serie, $fiche_id, $annee ;
     public $fileName;
     public $search;
     public $icon;
@@ -29,23 +33,13 @@ class StudentIndex extends Component
     public $edit;
     public $id_eleve;
     public $ide;
-    protected $queryString = [
-        'search'=> ['except'=>''],
-        'orderField'=> ['except'=>'title'],
-        'oderDirection'=> ['except'=>'ASC']
-    ];
-    public function research(){
-        $this->search = $this->search;
-        $this->nom = $this->nom;
-        $this->prenom = $this->prenom; 
-        $this->genre = $this->genre;
-        $this->dateNaissance = $this->dateNaissance;
-        $this->matricule = $this->matricule;
-        $this->classe = $this->classe;
-        $this->serie = $this->serie;
-    }
+    public $idSuppr;
+    public $idsSelects;
+    public $check;
+    public $perPage=10;
     public function getfilenames(){
-        $this->fileName ='file name : ' ;
+    $this->fileName ='file name : ' ;
+    
     }
     public string $orderField= 'nom';
     public string $orderDirection = 'ASC';
@@ -54,18 +48,9 @@ class StudentIndex extends Component
         $this->eleveInfo='';
    
     } 
-
-    //FONCTION DE FILTRRE
-    public function setOrderField(string $nom){
-        if($nom === $this->orderField){
-            $this->orderDirection = $this->orderDirection ==='ASC' ? 'DESC': 'ASC';
-            $this->icon ='check';
-        }else{
-            $this->orderField = $nom;
-            $this->reset('orderDirection');
-            
-        }
-       
+    
+    public function research(){
+        $this->search = $this->search;
     }
     public function create(){
         $this->creer = true;
@@ -80,13 +65,11 @@ class StudentIndex extends Component
         $this->matricule = $eleveupdate->matricule;
         $this->nom = $eleveupdate->nom  ;
         $this->prenom = $eleveupdate->prenom  ;
+        $this->annee = $eleveupdate->annee;
         $this->classe = $eleveupdate->classe  ;
         $this->genre = $eleveupdate->genre  ;
-        $this->tgp = $eleveupdate->tgp  ;
-        $this->mo = $eleveupdate->mo  ;
         $this->serie = $eleveupdate->serie  ;
         $this->dateNaissance = $eleveupdate->dateNaissance  ;
-        $this->contactParent = $eleveupdate->contactParent  ;
         $this->ecole_id = $eleveupdate->ecole_id;
         $this->ecole_A = $eleveupdate->ecole_A;
         $this->fiche_id = $eleveupdate->fiche_id;
@@ -99,17 +82,27 @@ class StudentIndex extends Component
         $this->resetInput();
     }
     private function resetInput(){
-        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->tgp=$this->dateNaissance=$this->contactParent=$this->ecole_id=$this->ecole_A=$this->classe=$this->mo=$this->serie=$this->fiche_id='';
+        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->dateNaissance=$this->ecole_id=$this->ecole_A=$this->classe=$this->serie=$this->fiche_id='';
         
     }
-    
+    public function getIdArray(){
+       $this->idsSelects=$this->idsSelects;
+       dd($this->idsSelects);
+    }
     public function studentInfo(){
-        $this->eleveInfo = eleve::with('eleve_ecole_O')->where('eleves.id',$this->ide)->get();
-        
+        $this->ide=$this->ide;
+         $id=$this->ide;
+        $this->eleveInfo = eleve::with('eleve_ecole_O')->where('eleves.id', $id)->get();
+        if ($this->eleveInfo[0]['eleve_ecole_O']!=null) {
         $dren_O = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole_O']->CODE_DREN)->get();
         $this->drenOrigine=$dren_O[0]->nom_dren;
+        }
+        if ($this->eleveInfo[0]['eleve_ecole_A']!=null) {
         $dren_A = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole_A']->CODE_DREN)->get();
         $this->drenAccueil=$dren_A[0]->nom_dren;
+        }
+        if ($this->eleveInfo[0]['eleve_fiche']!=null) {   
+        }
         
         /*
         $this->eleveInfo= eleve::where('eleves.id',$id)
@@ -125,7 +118,6 @@ class StudentIndex extends Component
             
         }else{
             $this->serie = 'NA';
-            $this->mo = 0.00;
         }
     }
     public function storeStudent(){
@@ -136,29 +128,21 @@ class StudentIndex extends Component
             'prenom'=>'required|min:2',
             'classe'=>'required|min:3',
             'genre'=>'required|min:1',
-            'tgp'=>'',
-            'mo'=>'',
             'dateNaissance'=>'',
-            'contactParent'=>'',
             'ecole_id' =>'required|min:1',
             'ecole_A' =>'required|min:1',
             'serie'=>'required|min:1',
-            'fiche_id' =>'required|min:1',  
-            
+            'fiche_id' =>'required|min:1',
+            'annee'  =>'required|min:4' ,  
         ]);
         
-        if(strlen($this->tgp)==0 ){
-            $validate['tgp']=1;
-         };
-         if(strlen($this->mo)==0 ){
-            $validate['mo']=1;
-         };
+        
+        
          if(strlen($this->dateNaissance)==0 ){
             $validate['dateNaissance']='0000-01-01';
          };
         if(!$this->classe=='2nde'){
             $validate['serie']=$this->serie;
-            $validate['mo']=$this->mo;
         }
         if(!eleve::where('matricule', $this->matricule)->exists()){
             eleve::create($validate);
@@ -181,18 +165,15 @@ class StudentIndex extends Component
             'prenom'=>'required|min:3',
             'classe'=>'required|min:3',
             'genre'=>'required|min:1',
-            'tgp'=>'',
-            'mo'=>'',
             'dateNaissance'=>'',
-            'contactParent'=>'',
-            'ecole_id' =>'required|min:1',
-            'ecole_A' =>'required|min:1',
-            'serie'=>'required|min:1',
-            'fiche_id' =>'required|min:1',     
+            'ecole_id' =>'',
+            'ecole_A' =>'',
+            'serie'=>'',
+            'fiche_id' =>'',
+            'annee'=>'required|min:4' ,  
         ]);
         if(!$this->classe=='2nde'){
             $validate['serie']=$this->serie;
-            $validate['mo']=$this->mo;
         }
         $eleveupdate = eleve::find($this->id_eleve);
         if($eleveupdate->update($validate)){
@@ -202,19 +183,38 @@ class StudentIndex extends Component
         } 
         
     }
-    public function show(){
-
+    public function deleteStudent($a){
+        eleve::find($a)->delete();
+        $this->ide="";
+        $this->eleveInfo='';
     }
-
+    public function toSearchableArray(): array
+    {
+        $array = [
+            "nom"=>$this->nom,
+            "prenom"=>$this->prenom,
+        ];
+ 
+        // Customize the data array...
+ 
+        return $array;
+    }
     public function render()
-    { 
+    {
+        $words= '%'.$this->search.'%' ;
+        $students=eleve::where('nom','like', $words)
+        ->orWhere('prenom','like', $words)
+        ->orWhere('matricule','like', $words)
+        ->with('eleve_ecole_A')
+        ->with('eleve_fiche')
+        ->paginate($this->perPage);
+        $studentCount=$students->count();
         return view('livewire.student-index', [
-            'students'=> eleve::where($this->orderField, 'LIKE', '%'.$this->search.'%')
-            ->with('eleve_ecole_A')
-            ->with('eleve_fiche')->get(),          
-         
+            'students'=> $students,
+
             'ecole'=>ecole::select('id','NOMCOMPLs')->get(), 
-            'fiche'=> fiche::with('fiche_ecole')->with('fiche_dren')->get()
+            'fiche'=> fiche::with('fiche_ecole')->with('fiche_dren')->get(),
+            'studentCount'=>$studentCount,
             
         ]);
     }
