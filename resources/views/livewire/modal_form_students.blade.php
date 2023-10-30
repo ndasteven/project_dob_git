@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 <div class="col-2">
-                    <label for="validationCustom04" class="form-label">classe</label>
+                    <label for="validationCustom04" class="form-label">Niveau</label>
                     <select class="form-select @error('classe') is-invalid @enderror " id="validationCustom04" wire:change='selectclasse' wire:model='classe'  >
                       <option selected value="">choisir la classe de l'élève</option>
                       <option value="6eme">6eme</option>
@@ -121,7 +121,7 @@
                 <label for="formFile" class="form-label " @error('ecole_id') style="color: rgb(192, 79, 79)" @enderror> Selectionner un etablissement d'origine</label>
                 <div wire:ignore>
                   <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off">
-                    <option value="0">selectionner l'école d'origine</option>
+                    <option value="">selectionner l'école d'origine</option>
                     @foreach ($ecole as $item)
                     <option value="{{$item->id}}" style="z-index: 1;" >{{$item->NOMCOMPLs}}</option>
                     @endforeach

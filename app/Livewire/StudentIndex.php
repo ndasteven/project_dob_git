@@ -35,8 +35,11 @@ class StudentIndex extends Component
     public $ide;
     public $idSuppr;
     public $idsSelects;
-    public $check;
+    public $countTableIndex=0;
+    public $longueurTable=0;
     public $perPage=10;
+    public $restUpdate=0;
+    public $elevemultipleUpdate;
     public function getfilenames(){
     $this->fileName ='file name : ' ;
     
@@ -87,8 +90,14 @@ class StudentIndex extends Component
     }
     public function getIdArray(){
        $this->idsSelects=$this->idsSelects;
-       dd($this->idsSelects);
+       $this->longueurTable = count($this->idsSelects);
+       $this->countTableIndex = 0;
+       $this->elevemultipleUpdate=eleve::where('eleves.id',$this->idsSelects[$this->countTableIndex] )->get();
+       $this->dispatch('getIdArray');
+       $this->restUpdate = $this->longueurTable;
+       //dd($this->idsSelects);
     }
+    
     public function studentInfo(){
         $this->ide=$this->ide;
          $id=$this->ide;
@@ -153,10 +162,7 @@ class StudentIndex extends Component
         {
             session()->flash('error', 'Matricule existe déjà');
         }
-        
-        
-
-        
+                
     }
     public function updateStudent(){
         $validate = $this->validate([
@@ -182,6 +188,38 @@ class StudentIndex extends Component
             session()->flash("error", "Erreur de mise à jour");
         } 
         
+    }
+    public function updateMultiple(){
+        
+        if($this->longueurTable > $this->countTableIndex ){
+            $validate = $this->validate([
+                'classe'=>'required|min:3',
+                'ecole_id' =>'',
+                'ecole_A' =>'',
+                'serie'=>'',
+                'fiche_id' =>'',
+                'annee'=>'required|min:4' ,  
+            ]);
+            if(!$this->classe=='2nde'){
+                $validate['serie']=$this->serie;
+            }
+            $this->elevemultipleUpdate=eleve::where('eleves.id',$this->idsSelects[$this->countTableIndex] )->get();
+            $eleveupdate = eleve::find($this->idsSelects[$this->countTableIndex]);
+            if($eleveupdate->update($validate)){
+            
+            }else{
+            session()->flash("error", "Erreur de mise à jour");
+            } 
+            $this->countTableIndex++;
+            $this->restUpdate = $this->longueurTable - $this->countTableIndex;
+           
+            if ($this->countTableIndex== $this->longueurTable) {
+                session()->flash("success", " Toutes les mises à jour ont été effectué avec succès");
+            }else{
+                    
+            }
+
+        }
     }
     public function deleteStudent($a){
         eleve::find($a)->delete();
