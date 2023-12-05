@@ -1,1 +1,1 @@
-<img src="storage/img/amoi.png" height="51" width="58">
+<img src="asset/img/logoDOB.jpeg" height="51" width="58">

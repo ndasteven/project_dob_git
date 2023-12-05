@@ -6,12 +6,11 @@ use App\Models\dren;
 use App\Models\ecole;
 use App\Models\eleve;
 use App\Models\fiche;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Scout\Searchable;
-
 
 
 
@@ -21,7 +20,7 @@ class StudentIndex extends Component
     use WithFileUploads;
     
     protected $paginationTheme = 'bootstrap';
-    public $matricule, $nom, $prenom, $genre, $dateNaissance, $ecole_id,$ecole_A, $classe, $serie, $fiche_id, $annee ;
+    public $matricule, $nom, $prenom, $genre, $dateNaissance, $ecole_id,$ecole_A, $classe, $serie, $fiche_id, $annee, $ecole_origine ;
     public $fileName;
     public $search;
     public $icon;
@@ -39,10 +38,17 @@ class StudentIndex extends Component
     public $longueurTable=0;
     public $perPage=10;
     public $restUpdate=0;
+    public $errorCount =0;
     public $elevemultipleUpdate;
+    public $message_error=[];
+    public $serieMultiple;
+    public $hasRole="user";
+    public $shareAnnee;
+    public $shareNiveau;
+
     public function getfilenames(){
     $this->fileName ='file name : ' ;
-    
+
     }
     public string $orderField= 'nom';
     public string $orderDirection = 'ASC';
@@ -55,6 +61,7 @@ class StudentIndex extends Component
     public function research(){
         $this->search = $this->search;
     }
+   
     public function create(){
         $this->creer = true;
         $this->edit = false;
@@ -72,7 +79,7 @@ class StudentIndex extends Component
         $this->classe = $eleveupdate->classe  ;
         $this->genre = $eleveupdate->genre  ;
         $this->serie = $eleveupdate->serie  ;
-        $this->dateNaissance = $eleveupdate->dateNaissance  ;
+        $this->dateNaissance = date('Y-m-d', strtotime($eleveupdate->dateNaissance))   ;
         $this->ecole_id = $eleveupdate->ecole_id;
         $this->ecole_A = $eleveupdate->ecole_A;
         $this->fiche_id = $eleveupdate->fiche_id;
@@ -85,23 +92,53 @@ class StudentIndex extends Component
         $this->resetInput();
     }
     private function resetInput(){
-        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->dateNaissance=$this->ecole_id=$this->ecole_A=$this->classe=$this->serie=$this->fiche_id='';
+        $this->matricule=$this->nom=$this->prenom=$this->genre=$this->dateNaissance=$this->ecole_id=$this->ecole_A=$this->classe=$this->serie=$this->fiche_id=$this->annee='';
         
     }
-    public function getIdArray(){
+    public function verifyStudentSelect(){
+        $requete=eleve::where('eleves.id',$this->idsSelects[$this->countTableIndex] );
+        $this->elevemultipleUpdate=$requete->get();
+        if(strlen($this->elevemultipleUpdate[0]->ecole_id)==null){
+            if(strlen($this->elevemultipleUpdate[0]->ecole_origine)!=null){
+                
+                $words= '%'.$this->elevemultipleUpdate[0]->ecole_origine.'%' ;
+                $son_ecole_origin=ecole::where('NOMCOMPLs','like', $words)->get();
+                if(count($son_ecole_origin)==0){
+                    $this->errorCount +=1;
+                    array_push($this->message_error, 'Ecole d\'origine '.$this->elevemultipleUpdate[0]->ecole_origine.' n\'esxiste pas dans la base pour le matricule '. $this->elevemultipleUpdate[0]->matricule);
+                }else{
+                //ici a selectionner id de son ecole origine 
+                $this->elevemultipleUpdate[0]->ecole_id=$son_ecole_origin[0]->id;
+                $requete->update(['ecole_id'=>$son_ecole_origin[0]->id]);
+                }
+                
+                              
+            }else{
+                $this->errorCount +=1;
+                array_push($this->message_error,'Veillez selectionner l\'école origine de l\'éleve qui a pour le matricule '. $this->elevemultipleUpdate[0]->matricule);  
+            }
+            
+           }else{
+            $this->ecole_id = $this->elevemultipleUpdate[0]->ecole_id;
+            $this->dispatch('verifyStudentSelect');            
+           }
+    }
+    public function getIdArray(){ // permet d'etre active pour les element selectionner
        $this->idsSelects=$this->idsSelects;
        $this->longueurTable = count($this->idsSelects);
        $this->countTableIndex = 0;
-       $this->elevemultipleUpdate=eleve::where('eleves.id',$this->idsSelects[$this->countTableIndex] )->get();
+       $this->verifyStudentSelect();
        $this->dispatch('getIdArray');
        $this->restUpdate = $this->longueurTable;
        //dd($this->idsSelects);
     }
     
     public function studentInfo(){
+
         $this->ide=$this->ide;
          $id=$this->ide;
         $this->eleveInfo = eleve::with('eleve_ecole_O')->where('eleves.id', $id)->get();
+        
         if ($this->eleveInfo[0]['eleve_ecole_O']!=null) {
         $dren_O = dren::where('code_dren',$this->eleveInfo[0]['eleve_ecole_O']->CODE_DREN)->get();
         $this->drenOrigine=$dren_O[0]->nom_dren;
@@ -123,11 +160,14 @@ class StudentIndex extends Component
         
     }
     public function selectclasse(){
-        if($this->classe=='2nde'){
-            
+
+        if($this->classe=='2nde'){   
         }else{
             $this->serie = 'NA';
         }
+    }
+    public function checkSerieMultiple(){
+        $this->serieMultiple = $this->serieMultiple; // il regarde si la serie est identique pour tous les élèves selectionnés 
     }
     public function storeStudent(){
         
@@ -136,17 +176,16 @@ class StudentIndex extends Component
             'nom'=>'required|min:2',
             'prenom'=>'required|min:2',
             'classe'=>'required|min:3',
+            'ecole_origine'=>'',
             'genre'=>'required|min:1',
             'dateNaissance'=>'',
             'ecole_id' =>'required|min:1',
             'ecole_A' =>'required|min:1',
             'serie'=>'required|min:1',
             'fiche_id' =>'required|min:1',
-            'annee'  =>'required|min:4' ,  
+            'annee'  =>'required|min:4' ,
+
         ]);
-        
-        
-        
          if(strlen($this->dateNaissance)==0 ){
             $validate['dateNaissance']='0000-01-01';
          };
@@ -154,9 +193,16 @@ class StudentIndex extends Component
             $validate['serie']=$this->serie;
         }
         if(!eleve::where('matricule', $this->matricule)->exists()){
+            
+            if(strlen($this->ecole_id)!=0){
+                $ecole = ecole::where('id','=',$this->ecole_id)->get();
+                $validate['ecole_origine']=$ecole[0]->NOMCOMPLs;
+            }
+            
             eleve::create($validate);
             session()->flash("success", "Enregistrement effectué avec succès");
             $this->resetInput();
+            $this->dispatch('save');
             
         }else
         {
@@ -181,6 +227,9 @@ class StudentIndex extends Component
         if(!$this->classe=='2nde'){
             $validate['serie']=$this->serie;
         }
+        if(strlen($this->dateNaissance)==0 ){
+            $validate['dateNaissance']='0000-01-01';
+         };
         $eleveupdate = eleve::find($this->id_eleve);
         if($eleveupdate->update($validate)){
             session()->flash("success", "Mise à jour effectué avec succès");
@@ -189,37 +238,47 @@ class StudentIndex extends Component
         } 
         
     }
-    public function updateMultiple(){
-        
+    public function pushUpdateMultiple(){
         if($this->longueurTable > $this->countTableIndex ){
             $validate = $this->validate([
                 'classe'=>'required|min:3',
-                'ecole_id' =>'',
                 'ecole_A' =>'',
-                'serie'=>'',
+                'serie'=>'required|min:1',
                 'fiche_id' =>'',
                 'annee'=>'required|min:4' ,  
             ]);
             if(!$this->classe=='2nde'){
                 $validate['serie']=$this->serie;
             }
-            $this->elevemultipleUpdate=eleve::where('eleves.id',$this->idsSelects[$this->countTableIndex] )->get();
+            
             $eleveupdate = eleve::find($this->idsSelects[$this->countTableIndex]);
             if($eleveupdate->update($validate)){
-            
+                $this->countTableIndex = $this->countTableIndex + 1 ;
+                 //il verifie le suivant
             }else{
             session()->flash("error", "Erreur de mise à jour");
             } 
-            $this->countTableIndex++;
+            
             $this->restUpdate = $this->longueurTable - $this->countTableIndex;
            
-            if ($this->countTableIndex== $this->longueurTable) {
+            if ($this->countTableIndex == $this->longueurTable) {
                 session()->flash("success", " Toutes les mises à jour ont été effectué avec succès");
-            }else{
-                    
+            }else{                
+                $this->verifyStudentSelect();
+                   
             }
 
         }
+    }
+    public function updateMultiple(){
+
+        if($this->classe=="6eme" || $this->serieMultiple == true){
+            for ($i=0; $i < $this->longueurTable; $i++) {
+                $this->pushUpdateMultiple();
+                }
+        }else{
+                $this->pushUpdateMultiple();
+        }  
     }
     public function deleteStudent($a){
         eleve::find($a)->delete();
@@ -237,8 +296,14 @@ class StudentIndex extends Component
  
         return $array;
     }
+    
     public function render()
     {
+        
+        
+        $this->shareAnnee = session('shareYear');
+        $this->shareNiveau = session('shareNiveau');
+        
         $words= '%'.$this->search.'%' ;
         $students=eleve::where('nom','like', $words)
         ->orWhere('prenom','like', $words)
@@ -251,8 +316,11 @@ class StudentIndex extends Component
             'students'=> $students,
 
             'ecole'=>ecole::select('id','NOMCOMPLs')->get(), 
-            'fiche'=> fiche::with('fiche_ecole')->with('fiche_dren')->get(),
+            'fiche'=> fiche::with('fiche_ecole')->with('fiche_dren')
+            ->orderBy('created_at', 'ASC')
+            ->get(),
             'studentCount'=>$studentCount,
+            'hasRole'=>$this->hasRole
             
         ]);
     }

@@ -6,11 +6,17 @@
 
         <div x-data="{ recovery: false }">
             <div class="mb-4 text-sm text-gray-600 dark:text-gray-400" x-show="! recovery">
-                {{ __('Please confirm access to your account by entering the authentication code provided by your authenticator application.') }}
+                {{ __('Veuillez confirmer l\'accès à votre compte en entrant le code d\'authentification fourni par votre application d\'authentification.
+
+
+
+
+
+                ') }}
             </div>
 
             <div class="mb-4 text-sm text-gray-600 dark:text-gray-400" x-cloak x-show="recovery">
-                {{ __('Please confirm access to your account by entering one of your emergency recovery codes.') }}
+                {{ __('Veuillez confirmer l\'accès à votre compte en entrant l\'un de vos codes de récupération d\'urgence.') }}
             </div>
 
             <x-validation-errors class="mb-4" />
@@ -35,7 +41,7 @@
                                         recovery = true;
                                         $nextTick(() => { $refs.recovery_code.focus() })
                                     ">
-                        {{ __('Use a recovery code') }}
+                        {{ __('Utilisez un code de récupération.') }}
                     </button>
 
                     <button type="button" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 underline cursor-pointer"
@@ -45,11 +51,11 @@
                                         recovery = false;
                                         $nextTick(() => { $refs.code.focus() })
                                     ">
-                        {{ __('Use an authentication code') }}
+                        {{ __('Utilisez un code d\'authentification.') }}
                     </button>
 
                     <x-button class="ml-4">
-                        {{ __('Log in') }}
+                        {{ __('Se connecter') }}
                     </x-button>
                 </div>
             </form>

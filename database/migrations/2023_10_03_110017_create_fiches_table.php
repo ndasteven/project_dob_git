@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('fiches', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
+            $table->string('remarkFiche')->nullable();
             $table->string('fiche_nom');
             $table->string('classe');
+            $table->string('type_fiche');
             $table->integer('annee');
             $table->timestamps();
         });

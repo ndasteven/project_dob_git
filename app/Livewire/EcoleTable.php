@@ -16,23 +16,28 @@ use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+use Illuminate\Support\Facades\Auth;
+
 
 final class EcoleTable extends PowerGridComponent
 {
     use WithExport;
-
+    public int $perPage = 5;
+    public array $perPageValues = [1, 5, 10, 20, 50];
     public function setUp(): array
     {
         $this->showCheckBox();
 
         return [
+            /*
             Exportable::make('export')
                 ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),*/
             Header::make()->showSearchInput()
             ->showToggleColumns(),
             Footer::make()
                 ->showPerPage()
+                ->showPerPage($this->perPage, $this->perPageValues)
                 ->showRecordCount(),
         ];
     }
@@ -114,16 +119,19 @@ final class EcoleTable extends PowerGridComponent
     #[\Livewire\Attributes\On('edit')]
     public function edit($rowId): void
     {
-        $this->js('alert('.$rowId.')');
+       
     }
-
+    #[\Livewire\Attributes\On('addSchool')]
+    public function addSchool(){
+        
+    }
     public function actions(\App\Models\ecole $row): array
     {
         return [
             Button::add('edit')
-                ->slot('Edit: '.$row->id)
+                ->slot('Voir+')
                 ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
+                ->class('btn btn-sm  checkinfo')
                 ->dispatch('edit', ['rowId' => $row->id])
         ];
     }
@@ -139,4 +147,19 @@ final class EcoleTable extends PowerGridComponent
         ];
     }
     */
+    public function header(): array
+    
+    {
+    if (Auth::check() && Auth::user()->role === 'superAdmin' || Auth::user()->role === 'admin'){
+    return [
+        Button::add()
+        ->slot('Ajouter une ecole')
+        ->id()
+        ->class('btn btn-sm  checkinfo')
+        ->dispatch('addSchool',[])
+    ];    
+    }else{
+        return[];
+    }
+}
 }

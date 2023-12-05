@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('CODSERVs');
             $table->string('NOMCOMPLs');
-            $table->string('GENREs');
+            $table->string('GENREs')->nullable();
             $table->integer('CODE_DREN');
             $table->timestamps();
         });

@@ -5,16 +5,7 @@
         </h2>
     </x-slot>
     <style>
-.dataTables_filter input {
-    /* Vos styles CSS personnalisés ici */
-  
-    /* Ajoutez d'autres styles personnalisés selon vos besoins */
-}
-.dataTables_filter label {
-    /* Vos styles CSS personnalisés ici */
-   
-    /* Ajoutez d'autres styles personnalisés selon vos besoins */
-}
+
 .btn-spacing {
     margin-right: 10px; /* Ajoutez la marge à droite pour espacer les boutons */
     background-color: #fff;
@@ -24,10 +15,17 @@
 .checkinfo{
     background-color: #39b315;color:#fff;
 }
+table{
+    font-size: 13px;
+}
+.form-control{
+    height:33px;
+}
+
     </style>
     <div class="container" >
         <div class="row d-flex justify-content-end mt-4">
-            <button class="btn btn-sm col-md-2 col-4" data-bs-toggle="modal" data-bs-target="#modalStudent" wire:click='create()' style="background-color: #39b315;color:#fff; margin-right:12px">Ajouter un élève</button>
+            <button class="btn btn-sm col-md-2 col-4 addStudent" data-bs-toggle="modal" data-bs-target="#modalStudent" wire:click='create()' style="display:none"></button>
         </div>
         <!--liste des élèves -->
         <div class="row">
@@ -36,8 +34,9 @@
                
                 <div class="row">
                     
+                   
                     <div class="col-md-12 col-12 mt-5">
-                        <livewire:student-table/><button class="studentclick" wire:model='ide'   data-bs-toggle="modal" data-bs-target="#modalStudentInfos" wire:click="studentInfo()"   style="display:none" ></button>
+                        <livewire:student-table :shareAnnee="$shareAnnee" :shareNiveau="$shareNiveau" /><button class="studentclick" wire:model='ide'   data-bs-toggle="modal" data-bs-target="#modalStudentInfos" wire:click="studentInfo()"   style="display:none" ></button>
                                                 <button class="multipleCheck" wire:model='idsSelects' wire:click="getIdArray" data-bs-toggle="modal" data-bs-target="#multipleEdit"></button>
                     </div>
                 </div>
@@ -68,10 +67,24 @@
             @this.idsSelects = data[0].myId; // on fait passer les id selectionner de la propriete $this->showCheckBox()->checkedValues() de la table powergrid studenTable dans le controlleur liveire StudentIndex.php
             $('.multipleCheck').click()
           })
+
+          @this.on('addStudent', function(){
+            $('.addStudent').click()
+            
+          })
           
+         
+       
+       
+           
+      
         });
+
+
+     
     </script>
 </div>
 
-<script> 
+<script>
+
 </script>

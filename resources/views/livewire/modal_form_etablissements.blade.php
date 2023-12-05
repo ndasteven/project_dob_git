@@ -1,11 +1,13 @@
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self> 
+<div class="modal fade modalSchool" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self> 
   <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet" wire:ignore.self>
-  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js" wire:ignore.self></script> 
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js" wire:ignore.self></script>
   <div class="modal-dialog modal-fullscreen">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Enregistrer un établissement</h1>
-          <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="exampleModalLabel"> @if($creer) Enregistrer un établissement @endif @if($edit) Modifier un établissement @endif </h1>
+         
+          <button @if($creer) style="display: none" @endif @if($edit) style="display: block"   @endif  class="closeformUpdateSchool btn-close"  data-bs-dismiss="modal" aria-label="Close"></button> 
+          <button @if($creer) style="display: block" @endif @if($edit) style="display: none" wire:click="close"  @endif  class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button> 
         </div>
         <div class="modal-body">
           <!--Formulaire d'enregistrement-->
@@ -22,7 +24,7 @@
                 </div>
             @endif
             <!--Message alert-->
-            <form wire:submit.prevent='storeEtablissement()' enctype="multipart/form-data">
+            <form @if($creer) wire:submit.prevent='storeEtablissement()' @endif @if($edit)wire:submit.prevent='updateEtablissement()' @endif enctype="multipart/form-data">
                 <div class="row">
                 <div class="col">
                     <label for="validationServer01" class="form-label">Code établissement</label>
@@ -62,16 +64,6 @@
               <div class="invalid-feedback">
                 @error('CODE_DREN')Selectionner une DREN @enderror"
               </div>
-              <script>
-                
-                new TomSelect("#select-beast",{
-                  create: true,
-                  sortField: {
-                    field: "text",
-                    direction: "asc"
-                  }
-                });
-            </script>
             </div>
            
  
@@ -90,5 +82,32 @@
         </div>
       </div>
     </div>
-    
+    <!--composant de loading permettant de patientez pendant chargement des datas provenant du controller livewire-->
+    @include('livewire.loading')
+    <!--fin loading -->
   </div>
+  <script>
+    document.addEventListener('livewire:initialized', () => {
+      $('.closeformUpdateSchool').on('click', function(e){
+      $('.modalSchool').modal('hide')  
+      $('#modalSchoolInfos').modal('show') 
+    })
+    var select = new TomSelect("#select-beast",{
+    create: true,
+    sortField: {
+    field: "text",
+    direction: "asc"
+    }
+    });
+    @this.on('check', (data)=>{
+      select.addItem(@this.CODE_DREN);
+    })
+    @this.on('save', (data) => {
+      Swal.fire(
+      'Effectué',
+      'Enregistrement effectué avec succès',
+      'success'
+      )     
+    });
+  })
+</script>

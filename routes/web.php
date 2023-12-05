@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\test;
+use App\Livewire\Admin\Admin;
 use App\Livewire\Drenindex;
 use App\Livewire\EtablissementIndex;
 use App\Livewire\FicheIndex;
 use App\Livewire\StudentIndex;
+use App\Models\ecole;
+use App\Models\eleve;
+use App\Models\fiche;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,13 +34,18 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
+        
         return view('dashboard');
     })->name('dashboard');
 });
+
+
 
 Route::get('/student',StudentIndex::class)->name('student')->middleware('auth');
 Route::get('/dren',Drenindex::class)->name('dren')->middleware('auth');
 Route::get('/etablissement',EtablissementIndex::class)->name('etablissement')->middleware('auth');
 Route::get('/fiche',FicheIndex::class)->name('fiche')->middleware('auth');
-Route::get('/test', [test::class, 'index'])->middleware('auth');;
+Route::get('/admin',Admin::class)->name('admin')->middleware('auth')->middleware('checkRole:superAdmin');//verifie si utilisateur connecter a pour role superAdmin pour pouvoir aller sur le lien /admin
+Route::get('/test', [test::class, 'index'])->middleware('auth');
+
 

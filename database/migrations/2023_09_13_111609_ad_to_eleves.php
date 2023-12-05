@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('eleves', function (Blueprint $table) {
-            $table->string('classe');
-            $table->string('serie');
+            $table->string('classe')->nullable();
+            $table->string('serie')->nullable();
            
         });
     }

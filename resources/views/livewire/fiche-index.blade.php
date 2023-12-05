@@ -1,61 +1,56 @@
 <div>
+<style>
+table{
+    font-size: 13px;
+}
+.form-control{
+    height:33px;
+}
+.checkinfo{
+    background-color: #ec3f3f;color:#fff;
+}    
+</style>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('FICHE ORIENTATION') }}
         </h2>
     </x-slot>
     <div class="container">
-        <div class="row d-flex justify-content-end mt-4">
-            <button class="btn btn-primary btn-sm col-5 col-md-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une fiche</button>
-        </div>
         
+        <div class="row d-flex justify-content-end mt-4">
+            <button class="btn btn-primary btn-sm col-5 col-md-2 activeAddFiche" data-bs-toggle="modal" data-bs-target="#modal_form_fiche" wire:click="create()" style="display: none"></button>
+        </div>
+        <button class="ficheclick" wire:model='ide'   data-bs-toggle="modal" data-bs-target="#modalFicheInfos" wire:click="ficheinfo"   style="display:none" ></button>
         <!--liste des fiche -->
         <div class="row">
             <div class="col-12 mt-4">
-                <div class=" mb-4   ">
-                    <input placeholder="rechercher"  type="search" wire:model='search' class="form-control shadow-2xl" wire:keydown.debounce.800ms='research' style="border-radius: 100px" />
-                </div>
-                <small style="font-weight: bold">recherche par matricule : <span style="color: blue">{{$orderField}}</span> </small> 
-               
-                <table class="table shadow-2xl" style="font-size: 12px">
-                    <thead>
-                      <tr>
-                        <th scope="col" wire:click="setOrderField('CODSERVs')" >Ecoles @if($orderField=='CODSERVs') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif </th>
-                        <th scope="col" wire:click="setOrderField('NOMCOMPLs')">Drens @if($orderField=='NOMCOMPLs') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
-                        <th scope="col" wire:click="setOrderField('GENREs')">Années  @if($orderField=='GENREs') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
-                        <th scope="col" wire:click="setOrderField('GENREs')">Classe  @if($orderField=='GENREs') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
-                        <th scope="col" wire:click="setOrderField('CODE_DREN')">Fiches @if($orderField=='CODE_DREN') @if($orderDirection === 'ASC') <i class="bi bi-arrow-up-circle"></i> @else <i class="bi bi-arrow-down-circle"></i> @endif @endif</th>
-                        <th scope="col" >Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                     @foreach ($fiche as $item)
-                     
-                         <tr>
-                            <td>{{$item['fiche_ecole']->NOMCOMPLs}}</td>
-                            <td>{{$item['fiche_dren']->nom_dren}}</td>
-                            <td>{{$item->annee}}</td>
-                            <td>{{$item->classe}}</td>
-                            <td>{{$item->nom}}</td>
-                            <td>
-                                <button class="btn btn-info btn-sm">selectionner</button>
-                            </td>
-                      </tr> 
-                     @endforeach
-                     
-                     
-                    </tbody>
-                  </table>
+                <livewire:fiche-table :shareAnnee="$shareAnnee"/>
             </div>
 
             
         </div>
         <!--fin liste des fiche -->
+      <!-- modal info fiche-->
+      @include('livewire.modalFicheInfos')
+      <!--fin modal -->
         <!-- modal -->
-        @include('livewire.modal_form_fiches')
+      
         <!--fin modal -->
-        {{$fiche->links()}}
     </div>
+    @include('livewire.modal_form_fiches')
     
 </div>
 
+<script>
+    document.addEventListener('livewire:initialized', () => {
+       @this.on('edit', (data) => {
+        @this.idefiche = data.rowId //ce id ce trouve dans le bouton sectionner dans le controlleur de mon powergrid "ficheTable"
+        $('.ficheclick').click()
+       });
+
+       @this.on('addFiche', function(){
+        $('.activeAddFiche').click()
+       })
+      
+    });
+</script>

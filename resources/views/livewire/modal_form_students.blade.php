@@ -1,6 +1,5 @@
 <div class="modal fade" id="modalStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self> 
-  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet" wire:ignore.self>
-  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js" wire:ignore.self></script>
+
   <div class="modal-dialog modal-fullscreen">
       <div class="modal-content" >
         <div class="modal-header">
@@ -8,7 +7,7 @@
           @if ($creer)<a  class="btn-close " data-bs-dismiss="modal" aria-label="Close" wire:click='cancel()'></a>
           @else
           <a  class="btn-close closeformUpdateStudent" wire:click='cancel()'></a>
-          @endif"
+          @endif
           
         </div>
         
@@ -29,21 +28,21 @@
             <form @if ($creer) wire:submit.prevent='storeStudent()' @endif @if ($edit) wire:submit.prevent='updateStudent()' @endif  enctype="multipart/form-data">
               @csrf  
               <div class="row">
-                <div class="col">
+                <div class="col col-md col-6">
                     <label for="validationServer01" class="form-label">Nom</label>
                     <input  class="form-control @error('nom') is-invalid @enderror " id="validationServer01" value="" wire:model='nom'  >
                     <div class="invalid-feedback">
                       Entrer un nom valide
                     </div>
                 </div>
-                <div class="col">
+                <div class="col col-md col-6">
                     <label for="validationServer01" class="form-label">Prenom</label>
                     <input class="form-control @error('prenom') is-invalid @enderror " id="validationServer01" value="" wire:model='prenom'  >
                     <div class="invalid-feedback">
                       Entrer un nom valide
                     </div>
                 </div>
-                <div class="col-2">
+                <div class="col-6 col-md-2">
                     <label for="validationCustom04" class="form-label">Niveau</label>
                     <select class="form-select @error('classe') is-invalid @enderror " id="validationCustom04" wire:change='selectclasse' wire:model='classe'  >
                       <option selected value="">choisir la classe de l'élève</option>
@@ -55,7 +54,7 @@
                     </div>
                 </div>
               
-                <div class="col-2">
+                <div class="col-6 col-md-2">
                   <label for="validationCustom04" class="form-label">Genre</label>
                   <select class="form-select @error('genre') is-invalid @enderror " id="validationCustom04" wire:model='genre'  >
                     <option selected value="">choisir le genre de l'élève</option>
@@ -68,40 +67,40 @@
               </div>
             </div>
             <div class="row mt-3">
-                <div class="col">
+                <div class="col-12 col-md">
                     <label for="validationServer01" class="form-label">Matricule</label>
                     <input  class="form-control @error('matricule') is-invalid @enderror  " id="validationServer01" value="" wire:model='matricule'  >
                     <div class="invalid-feedback">
                       Entrer un matricule valide
                     </div>
                 </div>
-                  @if ($classe=='2nde')
+                  
                 
-                  <div class="col-2">
+                  <div class="col-6 col-md"  @if ($classe=='2nde') style="display: block" @else style="display: none" @endif>
                     <label for="validationCustom04" class="form-label">Série</label>
                     <select class="form-select @error('serie') is-invalid @enderror " id="validationCustom04"  wire:model='serie'  >
                       <option selected value="">choisir la série</option>
                       <option value="A">A</option>
-                      <option value="B">B</option>
                       <option value="C">C</option>
-                      <option value="E">E</option>
-                      <option value="F">F</option>
-                      <option value="G">G</option>
+                      <option value="G1">G1</option>
+                      <option value="G2">G2</option>
+                      <option value="F1">F1</option>
+                      <option value="F2">F2</option>
                     </select>
                     <div class="invalid-feedback">
                       veillez selectionner une série.
                     </div>
-                  </div>
-                
-                @endif
-                <div class="col-2">
+                    </div>
+                  
+
+                <div class="col-6 col-md">
                   <label for="validationServer01" class="form-label">Année d'orientation</label>
                   <input  class="form-control @error('annee') is-invalid @enderror  " id="validationServer01" value="" wire:model='annee'  >
                   <div class="invalid-feedback">
                     Entrer l'année d'orientation de l'élève
                   </div>
                 </div>
-                <div class="col">
+                <div class="col-6 col-md">
                   <label for="validationServer01" class="form-label">Date de naissance</label>
                   <input type="date"  class="form-control @error('dateNaissance') is-invalid @enderror " id="validationServer01" value="" wire:model='dateNaissance'  >
                   <div class="invalid-feedback">
@@ -117,10 +116,10 @@
             </style>
             
             <div class="row mt-4" wire:loading.class="disabled">
-              <div class="col mb-3">
+              <div class="col-12 col-md mb-3">
                 <label for="formFile" class="form-label " @error('ecole_id') style="color: rgb(192, 79, 79)" @enderror> Selectionner un etablissement d'origine</label>
                 <div wire:ignore>
-                  <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast" wire:model='ecole_id' autocomplete="off">
+                  <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast"  wire:model='ecole_id' autocomplete="off">
                     <option value="">selectionner l'école d'origine</option>
                     @foreach ($ecole as $item)
                     <option value="{{$item->id}}" style="z-index: 1;" >{{$item->NOMCOMPLs}}</option>
@@ -130,9 +129,8 @@
                 <div class="invalid-feedback">
                   @error('ecole_id')Selectionner un établissement d'origine @enderror"
                 </div>
-              
               </div>
-                <div class="col mb-3">
+                <div class="col-12 col-md mb-3">
                   <label for="formFile" class="form-label"  @error('ecole_A') style="color: rgb(192, 79, 79)" @enderror>Selectionner un etablissement d'accueil</label>
                   <div wire:ignore>
                     <select class="form-select @error('ecole_A') is-invalid @enderror" id="select-beast-1" wire:model='ecole_A' autocomplete="off">
@@ -155,7 +153,7 @@
                 <select class="form-select @error('fiche_id') is-invalid @enderror" id="select-beast-2" wire:model='fiche_id' autocomplete="off">
                   <option value="">selectionner la fiche d'orientation</option>fiche_ecole
                   @foreach ($fiche as $item)
-                  <option value="{{$item->id}}" style="z-index: 1;" >{{$item->nom}} | {{$item->classe}} | {{$item->annee}} | {{$item['fiche_ecole']->NOMCOMPLs}} | {{$item['fiche_dren']->nom_dren}}  </option>
+                  <option value="{{$item->id}}" style="z-index: 1;" ><span style="display: none">{{$item->created_at}}</span>  {{$item->nom}} | {{$item->classe}} | {{$item->type_fiche}} | {{$item->annee}} | {{$item['fiche_ecole']->NOMCOMPLs}} | {{$item['fiche_dren']->nom_dren}}  </option>
                   @endforeach
                 </select>
               </div>
@@ -192,7 +190,7 @@
   </div>
        
 <script>
-  $(document).ready(function() {
+ document.addEventListener('livewire:initialized', () => {
     var select = new TomSelect("#select-beast",{
     create: true,
     sortField: {
@@ -213,7 +211,7 @@
     create: true,
     sortField: {
     field: "text",
-    direction: "asc"
+    direction: "desc"
     }
     });
     
@@ -257,14 +255,18 @@ $('#modalStudent').on('shown.bs.modal', function () { //permet de savoir si le m
        }, 20);
     
   });
-
-    
-    
+  
     
     $(('.closeformUpdateStudent')).on('click', function(e){
       $('#modalStudent').modal('hide')  
       $('#modalStudentInfos').modal('show') 
     })
+
+    @this.on('save', (data) => {
+      select.clear()
+      select1.clear()
+      select2.clear()
+    });
 });
 
 </script>

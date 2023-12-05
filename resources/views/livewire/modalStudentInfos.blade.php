@@ -62,7 +62,10 @@
                               </div>
                             </div>
                             <div style="text-align: center">
-                              <button class="btn btn-danger btn-sm col-7 mx-auto" id="openModal"><i class="bi bi-trash3"></i> supprimer l'élève</button> 
+                              @if (Auth::check() && Auth::user()->role === 'superAdmin' )
+                                <button class="btn btn-danger btn-sm col-7 mx-auto" id="openModal"><i class="bi bi-trash3"></i> supprimer l'élève</button> 
+                              @endif
+                              
                             </div>
                             
                           </div>
@@ -106,9 +109,18 @@
                                   <div class="col-sm-9 text-secondary">
                                       @if ($eleveInfo)
                                       @if ($eleveInfo->dateNaissance=='0000-01-01')
-                                        NA
+                                        Pas de date de naissance
                                       @else
-                                        {{$eleveInfo->dateNaissance}}
+                                        @php
+                                          $date= date('d-m-Y', strtotime($eleveInfo->dateNaissance));
+                                          $anneeNaissance = explode('-', $date)[2];
+                                           if ($anneeNaissance >= date('Y') or $anneeNaissance =='2023') {
+                                            echo 'Pas de date de naissance';
+                                           } else{
+                                            echo $date;
+                                           }
+                                        @endphp
+                                        
                                       @endif
                                       
                                       @else
@@ -187,17 +199,15 @@
                                   @endif
                                 @endif
                                 <hr>
-                                
+                                @if (Auth::check() && Auth::user()->role === 'superAdmin' || Auth::user()->role === 'admin')
                                 <div class="row mb-3 mt-2">
                                   <div class="col-sm-12 d-flex justify-content-between" >
                                     @if ($eleveInfo)
                                     <a class="btn btn-info " data-bs-toggle="modal" data-bs-target="#modalStudent" wire:click='update({{$eleveInfo->id}})'>Modifier</a>
                                     @endif
-                                    @if ($eleveInfo)
-                                   
-                                    @endif
                                   </div>
                                 </div>
+                                @endif
                               </div>
                             </div>
                             
@@ -318,14 +328,14 @@
       </div>
           <!--modal de confirmation de suppression-->
           
-          <div id="myModals" class="modalDel">
+          <div id="myModals" class="modalDel" style="text-align: center">
             <div class="modal-contents">
               <span id="closeModal" class="closes">&times;</span>
               <div style="" class="p-3">
                 <h2 style="color: #1a1818; font-weight: bold"  > Suppression de l'élève</h2>
               </div>
               
-              <div class="col-md-8 mx-auto">
+              <div class="col-md-8  col-12 mx-auto">
                 <div class="card shadow-xl mt-3 mb-4">
                   <div class="card-body">
                    <p style="font-weight: bold; color:red; text-align:center">Voulez vous supprimer l'élève ?</p> 

@@ -10,7 +10,7 @@ class fiche extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nom','fiche_nom','classe','ecole_id','dren_id','annee',
+        'nom','fiche_nom','classe','type_fiche','ecole_id','dren_id','annee','remarkFiche'
     ];
 
     public function fiche_dren(){
@@ -18,6 +18,10 @@ class fiche extends Model
     }
     public function fiche_ecole(){
         return 	$this->belongsTo(ecole::class,'ecole_id','id');
+    }
+    public function fiche_eleve(){
+        return 	$this->hasMany(eleve::class, 'fiche_id');
+
     }
 
 }
