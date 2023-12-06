@@ -6,12 +6,18 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Livewire\WithPagination;
+
+use App\Imports\elevesImport;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Admin extends Component
 {
     
     use WithPagination;
+    use WithFileUploads;
     protected $paginationTheme = 'bootstrap';
     public $countSuperAdmin;
     public $countAdmin;
@@ -119,6 +125,19 @@ class Admin extends Component
         $this->resetInput();
         
     }
+    //traitement d'importion fichier excel
+    public $file;
+
+    public function import(){
+        $import=$this->validate([
+            'file'=>'required|mimes:xlsx, xls'
+        ]);
+        $data = Excel::import(new elevesImport, $this->file);
+
+        
+        session()->flash("importOK", "les données ont été importé avec succès :)");
+    }
+    //fin traitement d'importion fichier excel
     public function render()
     {
         

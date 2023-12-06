@@ -59,7 +59,10 @@
                     
                   <div class=" col-5 col-md-4">
                     <button class="btn float-end btn-sm  btn-primary" wire:click="create()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Ajouter un Utilisateur</button>    
-                  </div>  
+                  </div> 
+                  <div class=" col-5 col-md-4">
+                    <button class="btn float-end btn-sm  btn-success" data-bs-toggle="modal" data-bs-target="#importFile">Imprtation de fichier excel</button>    
+                  </div> 
                 </div>
                 
                 <div class="overflow-auto">
@@ -222,6 +225,54 @@
   </div>
 </div>
 <!--Fin modal suppression-->
+
+<!--Modal d'importation-->
+
+<div class="modal fade " id="importFile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Importation de fichier Excel</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p style="color: red; font-weight:bold">Importations fichier excel </p>
+        @if (session()->has('importOK'))
+            <div class="alert alert-success mt-2 mb-2">
+              {{ session('importOK') }}
+            </div>
+          @endif
+        <div class="mb-3">
+          <form wire:submit.prevent="import">
+            <div class="col-1 mt-4"">
+              <span wire:loading style="margin: 0; float-end">
+                <div class="spinner-border text-warning mt-2" role="status">
+                </div>
+              </span>
+            </div>
+            <div class="row">
+             <label class=""form-label>Importation fichier excel</label>
+            <input type="file" class="form-control @error('file') is-invalid @enderror" wire:model="file">
+            @error('file') <span class="error">{{ $message }}</span> @enderror
+            <small>type de fichier <b class="text-danger">*</b>: XLSL XLS</small> 
+            </div>
+            
+            <div class="mt-5">
+              <button class="btn btn-primary" type="submit">Importation fichier Excel</button>
+            </div>
+            
+            
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer mt-5">
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!--Fin modal d'importation-->
+
 </div>
 <script>
   document.addEventListener('livewire:initialized', () => {

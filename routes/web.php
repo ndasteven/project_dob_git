@@ -48,4 +48,6 @@ Route::get('/fiche',FicheIndex::class)->name('fiche')->middleware('auth');
 Route::get('/admin',Admin::class)->name('admin')->middleware('auth')->middleware('checkRole:superAdmin');//verifie si utilisateur connecter a pour role superAdmin pour pouvoir aller sur le lien /admin
 Route::get('/test', [test::class, 'index'])->middleware('auth');
 
+Route::get('/import-excel', 'App\Http\Controllers\ExcelController@import');
+
 
