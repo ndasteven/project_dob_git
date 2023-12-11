@@ -166,8 +166,8 @@
           }, $timer); // Augmentation toutes les 100 millisecondes (ajustez selon vos préférences) 
       }
       //counter automatique du nombre des element de la base de donnée
-    counter({{$nombre_eleve6eme}}, "count_eleve6eme", 100,3)
-    counter({{$nombre_eleve2nde}}, "count_eleve2nde", 100, 3)
+    counter({{$nombre_eleve6eme}}, "count_eleve6eme", 100,1003)
+    counter({{$nombre_eleve2nde}}, "count_eleve2nde", 100, 1005)
     counter({{$nombre_rea6eme}}, "count_rea6eme", 100, 1)
     counter({{$nombre_rea2nde}}, "count_rea2nde", 100, 1)
     counter({{$nombre_fiche}}, "count_fiche", 100, 3)

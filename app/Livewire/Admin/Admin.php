@@ -11,6 +11,8 @@ use Livewire\WithPagination;
 
 use App\Imports\elevesImport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+
 use Maatwebsite\Excel\Facades\Excel;
 
 class Admin extends Component
@@ -127,16 +129,31 @@ class Admin extends Component
     }
     //traitement d'importion fichier excel
     public $file;
+    public $checkFile;
+    public function checkfileupload(){
+        $this->checkFile = true;
+        if($this->checkFile){
+        $this->dispatch("uploaded");
+        }
+        
+    }
 
     public function import(){
         $import=$this->validate([
-            'file'=>'required|mimes:xlsx, xls'
+            'file'=>'required|mimes:xlsx, xls|max:10240'
         ]);
-        $data = Excel::import(new elevesImport, $this->file);
+        if($this->file){
+            $data = Excel::queueImport(new elevesImport, $this->file);
+            $this->file = '';
+            //
 
-        
-        session()->flash("importOK", "les données ont été importé avec succès :)");
+        }else{
+            @dump('erreur sur le fichier uploader');
+        }
+ 
+        session()->flash("importOK", "les données sont entrains d'être importés:)");
     }
+
     //fin traitement d'importion fichier excel
     public function render()
     {

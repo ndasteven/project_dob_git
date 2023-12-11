@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 
-class elevesImport implements ToCollection,   WithBatchInserts, WithChunkReading,  WithUpserts, ShouldQueue
+class elevesImport implements ToCollection,   WithBatchInserts, WithChunkReading,  WithUpserts,ShouldQueue,  WithHeadingRow
 {
     /**
     * @param array $row
@@ -41,15 +41,18 @@ class elevesImport implements ToCollection,   WithBatchInserts, WithChunkReading
         foreach ($rows as $row) 
         {
             eleve::create([
-                'classe'=>"6eme",
-                'matricule'=> $row[1],
-                'nom'=>$row[2],
-                'prenom'=>$row[3],
-                'genre'=>$row[4],
-                'dateNaissance'=>$row[5],
-                'serie'=>'null',
-                'annee'=>"2019",
+                'classe'=>$row['classe'],
+                'matricule'=> $row['matricule'],
+                'nom'=>$row['nom'],
+                'prenom'=>$row['prenom'],
+                'genre'=>$row['genre'],
+                'dateNaissance'=>$row['datenaissance'],
+                'serie'=>isset($row['serie']) ? $row['serie'] : null,
+                'annee'=>$row['annee'],
+                'ecole_origine'=>$row['ecole_origine'],
             ]);
+
+            
         }
     }
 
@@ -60,7 +63,7 @@ class elevesImport implements ToCollection,   WithBatchInserts, WithChunkReading
     }
     public function chunkSize(): int
     {
-        return 1000;
+        return 500;
     }
     public function uniqueBy()
     {

@@ -34,7 +34,14 @@ table{
                
                 <div class="row">
                     
-                   
+                    @if (!empty($shareAnnee) || !empty($shareNiveau))
+                     @if (!empty($shareNiveau))
+                         <small style="color: blue"> Filter par niveau : <b style="color: red">{{$shareNiveau}}</b></small>
+                     @endif 
+                     @if (!empty($shareAnnee))
+                         <small style="color: blue"> Filter par année : <b style="color: red">{{$shareAnnee}}</b> </small>
+                     @endif 
+                    @endif
                     <div class="col-md-12 col-12 mt-5">
                         <livewire:student-table :shareAnnee="$shareAnnee" :shareNiveau="$shareNiveau" /><button class="studentclick" wire:model='ide'   data-bs-toggle="modal" data-bs-target="#modalStudentInfos" wire:click="studentInfo()"   style="display:none" ></button>
                                                 <button class="multipleCheck" wire:model='idsSelects' wire:click="getIdArray" data-bs-toggle="modal" data-bs-target="#multipleEdit"></button>

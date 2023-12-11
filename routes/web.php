@@ -34,7 +34,8 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        
+       
+       session(['shareYear' => '','shareNiveau'=>'']);// on renitialise les session au cas ou on revient à l'accueil
         return view('dashboard');
     })->name('dashboard');
 });
@@ -49,5 +50,9 @@ Route::get('/admin',Admin::class)->name('admin')->middleware('auth')->middleware
 Route::get('/test', [test::class, 'index'])->middleware('auth');
 
 Route::get('/import-excel', 'App\Http\Controllers\ExcelController@import');
+
+Route::fallback(function() {
+    return view('errorpage'); // la vue 404.blade.php
+ });
 
 

@@ -38,7 +38,7 @@
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link href="{{ route('fiche') }}" :active="request()->routeIs('fiche')">
-                        {{ __('Fiches de décisions') }}
+                        {{ __('décisions') }}
                     </x-nav-link>
                 </div>
                 @if (Auth::check() && Auth::user()->role === 'superAdmin')

@@ -39,7 +39,7 @@
                     <span class="icon-bar"></span>
                     
                     </button>
-                    <div style="text-align: center"><img src="asset/img/logo.png" height="90" width="90" ></div>
+                    <div style="text-align: center"><img src="asset/img/doblogo.jpeg" height="70" width="100" ></div>
                     <div style="text-align: center"><a class="navbar-brand" href="/dashboard"> Direction de l'Orientation <br> et des Bourses</a></div>                    
                 </div>
                 <div class="navbar-collapse collapse">

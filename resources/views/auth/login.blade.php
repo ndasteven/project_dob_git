@@ -19,7 +19,7 @@
               <div class="container-of-form mx-auto" style="margin-top: 150px">
        
            <div class="col-4 mx-auto">
-            <img src="asset/img/logo.png"  alt="" >
+            <img src="asset/img/doblogo.jpeg"  alt="" >
             
            </div>
         

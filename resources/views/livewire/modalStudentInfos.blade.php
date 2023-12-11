@@ -25,9 +25,9 @@
                                   @endforeach
                                   
                                   @if ($eleveInfo->genre=='M')
-                                  <img class="" src="asset/img/m.png" width="150">
+                                  <img class="" src="asset/img/m.JPG" width="150">
                                    @else 
-                                   <img class="" src="asset/img/f.png" alt="Admin" class="rounded-circle" width="150">
+                                   <img class="" src="asset/img/f.JPG" alt="Admin" class="rounded-circle" width="150">
                                   @endif
                                   
                                   <div class="mt-3">

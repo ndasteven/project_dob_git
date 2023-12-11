@@ -102,11 +102,16 @@ final class studentTable extends PowerGridComponent
             ->addColumn('prenom')
             ->addColumn('genre')
             ->addColumn('dateNaissance', function(eleve $eleve){
-
-                $date = Carbon::parse($eleve->dateNaissance);
-                if ($date->year=='2023' or $date->year=='0000' or $date->year>=date('Y')) {
+                
+                if($eleve->dateNaissance==null ){
                     return 'pas de date de naissance';
+                }else{
+                  $date = Carbon::parse($eleve->dateNaissance);
+                    if ($date->year=='2023' or $date->year=='0000' or $date->year>=date('Y')) {
+                        return 'pas de date de naissance';
+                    }  
                 }
+                
                 return $date->format('d-m-Y');
             })
             //->addColumn('ecole_id')
