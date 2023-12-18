@@ -128,16 +128,29 @@ class Admin extends Component
         
     }
     //traitement d'importion fichier excel
+    
+    
     public $file;
     public $checkFile;
-    public function checkfileupload(){
-        $this->checkFile = true;
-        if($this->checkFile){
-        $this->dispatch("uploaded");
-        }
-        
+    public $uploadProgress = 0;
+
+    public function fileUploaded()
+    {
+        // Traitement après le téléchargement du fichier
+        // Vous pouvez effectuer des opérations supplémentaires ici
+        $this->reset(['file', 'uploadProgress']);
+        $this->emit('uploaded');
     }
 
+    public function updatedFile()
+    {
+        $this->uploadProgress = 0;
+    }
+
+    public function updatingFile($value)
+    {
+        $this->uploadProgress = $value->getClientOriginalExtension();
+    }
     public function import(){
         $import=$this->validate([
             'file'=>'required|mimes:xlsx, xls|max:10240'
@@ -145,14 +158,15 @@ class Admin extends Component
         if($this->file){
             $data = Excel::queueImport(new elevesImport, $this->file);
             $this->file = '';
-            //
-
+            $this->checkFile='';
+            
         }else{
-            @dump('erreur sur le fichier uploader');
+            session()->flash("importOK", "fichier erroné!");
         }
  
-        session()->flash("importOK", "les données sont entrains d'être importés:)");
+        session()->flash("importOK", "Verification du fichier importé...");
     }
+
 
     //fin traitement d'importion fichier excel
     public function render()

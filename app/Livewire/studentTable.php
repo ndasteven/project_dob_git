@@ -168,7 +168,7 @@ final class studentTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Année orientation', 'eleve_annee', 'eleves.annee')
+            Column::make('Année orientation', 'annee', 'eleves.annee')
                 ->sortable()
                 ->searchable(),
             Column::make('Fiches d\'orientations', 'fiche'),

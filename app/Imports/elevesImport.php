@@ -2,16 +2,20 @@
 
 namespace App\Imports;
 
+use App\Models\ecole;
 use App\Models\eleve;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+
 
 class elevesImport implements ToCollection,   WithBatchInserts, WithChunkReading,  WithUpserts,ShouldQueue,  WithHeadingRow
 {
@@ -36,28 +40,37 @@ class elevesImport implements ToCollection,   WithBatchInserts, WithChunkReading
         ]);        
     }
     */
+    public $ecole_id;
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) 
         {
-            eleve::create([
+            
+            if(!eleve::where('matricule', $row['matricule'])->exists()){
+              eleve::create([
                 'classe'=>$row['classe'],
-                'matricule'=> $row['matricule'],
+                'matricule'=>(!eleve::where('matricule', $row['matricule'])->exists())? $row['matricule'] : '',
                 'nom'=>$row['nom'],
                 'prenom'=>$row['prenom'],
                 'genre'=>$row['genre'],
-                'dateNaissance'=>$row['datenaissance'],
+                'dateNaissance' => (isset($row['datenaissance']) && $row['datenaissance'] != 'null') ? Date::excelToDateTimeObject($row['datenaissance'])  : '0000-01-01',
                 'serie'=>isset($row['serie']) ? $row['serie'] : null,
-                'annee'=>$row['annee'],
                 'ecole_origine'=>$row['ecole_origine'],
-            ]);
-
-            
+                'ecole_id' => (strlen($row['ecole_origine']) > 0) ? 
+                (function () use ($row) { //function qui verifie dans la table ecole si le nom exist et donnner le bon id a la cole ecole_id qui correspond a la vrai ecole 
+                    $son_ecole_origin = ecole::where('NOMCOMPLs', 'like', '%' . $row['ecole_origine'] . '%')->get();
+                    return (count($son_ecole_origin) > 0) ? $this->ecole_id = $son_ecole_origin[0]->id : $this->ecole_id= null;
+                })() : null,
+            ]);  
+            }
+               
         }
+        
     }
 
     public function batchSize(): int
     {
+        
         return 1000;
         
     }

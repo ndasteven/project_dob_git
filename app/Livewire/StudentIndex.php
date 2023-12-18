@@ -71,6 +71,9 @@ class StudentIndex extends Component
         $this->id_eleve=$id;
         $this->creer = false;
         $this->edit = true;
+        if($this->edit){
+            $this->dispatch('modifier');
+        }
         $eleveupdate = eleve::findOrFail($id);
         $this->matricule = $eleveupdate->matricule;
         $this->nom = $eleveupdate->nom  ;
@@ -83,6 +86,7 @@ class StudentIndex extends Component
         $this->ecole_id = $eleveupdate->ecole_id;
         $this->ecole_A = $eleveupdate->ecole_A;
         $this->fiche_id = $eleveupdate->fiche_id;
+        $this->ecole_origine = $eleveupdate->ecole_origine;
         
     }
     
@@ -90,6 +94,13 @@ class StudentIndex extends Component
         $this->creer =false;
         $this->edit = false;
         $this->resetInput();
+        $this->dispatch('cancel');
+    }
+    public function closeUpdate(){
+        $this->creer =false;
+        $this->edit = false;
+        $this->resetInput();
+        $this->dispatch('closeUpdate');
     }
     private function resetInput(){
         $this->matricule=$this->nom=$this->prenom=$this->genre=$this->dateNaissance=$this->ecole_id=$this->ecole_A=$this->classe=$this->serie=$this->fiche_id=$this->annee='';

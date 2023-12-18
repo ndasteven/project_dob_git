@@ -16,11 +16,11 @@
     $tdStyles = Arr::toCssClasses([$theme->table->tdBodyStyle, $theme->table->tdFiltersStyle]);
 @endphp
 @if (config('livewire-powergrid.filter') === 'inline')
-    <tr
-        class="{{ $trClasses }}"
-        style="{{ $theme->table->trStyle }} {{ $theme->table->trFiltersStyle }}"
+    <tr 
+        class="{{ $trClasses }}  " 
+        style="{{ $theme->table->trStyle }} {{ $theme->table->trFiltersStyle }} "
     >
-
+    
         @if (data_get($setUp, 'detail.showCollapseIcon'))
             <td
                 class="{{ $tdClasses }}"
@@ -65,6 +65,7 @@
                                 'filter' => $filter,
                                 'theme' => $theme->filterInputText,
                             ])
+                            
                         @endif
                         @if (str(data_get($filter, 'className'))->contains('FilterNumber'))
                             @includeIf($theme->filterNumber->view, [

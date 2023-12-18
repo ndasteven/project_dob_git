@@ -1,16 +1,47 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+      <div class="row">
+        <div class="col-1 " style="width: 50px" >
+          <button class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+           <i style="color: #fff" class="bi bi-list"></i> 
+          </button>
+          
+        </div>
+        <div class="col-10 mt-1">
+         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Administrateur') }}
-        </h2>
+         </h2> 
+        </div>
+      </div> 
     </x-slot>
     <link rel="stylesheet" href="asset/css/admin/admin.css">
 <div class="container">
-    <div class="row mt-4">
+  <!--menu left offcanvas -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" wire:ignore.self>
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">MENU</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div>
+        <small>Administaeur du système d'archivage peut effectuer plusieurs configurations avec les bouttons ci-dessous</small>.
+      </div>
+      <div class="mt-3">
+        <div class="btn-group-vertical  col-12" role="group" aria-label="Vertical button group">
+          <button type="button " class="btn btn-sm btn-outline-primary col-12 mt-2 " data-bs-toggle="modal" data-bs-target="#importFile">Importer des élèves</button>
+          <button type="button " class="btn btn-sm btn-outline-primary col-12 mt-2 " data-bs-toggle="modal" data-bs-target="#importFile">Importer des écoles</button>
+          <button type="button " class="btn btn-sm btn-outline-primary col-12 mt-2" wire:click="create()"  data-bs-toggle="modal" data-bs-target="#staticBackdrop">Ajouter des utilisateurs</button>
+        </div> 
+      </div>
+      <div class="d-flex justify-content-center"><small><livewire:file-attente></small> </div>
+    </div>
+  </div>
+  <!--fin menu left offcanvas -->
+    <div class="row mt-4" >
         <div class="row">
             <div class="col-md-10 row d-flex justify-content-center  mx-auto" >
               <div class="col-md-4 ">
-                  <div class="card">
+                  <div class="card cardadmin">
                     <div class="card-content">
                       <p class="card-title">Profil</p>
                       <p>Super Admin: <span style="font-weight: bold; font-size:22px; color:#FFD700">{{$countSuperAdmin}} </span></p>
@@ -19,7 +50,7 @@
                   </div>
                 </div>
                 <div class="col-md-4">
-                 <div class="card cardInfo">
+                 <div class="card cardadmin cardInfo">
                     <div class="card-content">
                         <p class="card-title">Profil</p>
                         <p>Admin : <span style="font-weight: bold; font-size:22px; color:#FFD700">{{$countAdmin}} </span> </p>
@@ -28,7 +59,7 @@
                   </div>
                 </div>
                 <div class="col-md-4">
-                  <div class="card">
+                  <div class="card cardadmin">
                     <div class="card-content">
                         <p class="card-title">Profil</p>
                         <p>Utilisateur: <span style="font-weight: bold; font-size:22px; color:#FFD700">{{$countUtilisateur}} </span> </p>
@@ -55,13 +86,9 @@
                         </div>
                       </div>
                         
-                    </div>
-                    
+                    </div> 
                   <div class=" col-5 col-md-4">
-                    <button class="btn float-end btn-sm  btn-primary" wire:click="create()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Ajouter un Utilisateur</button>    
-                  </div> 
-                  <div class=" col-5 col-md-4">
-                    <button class="btn float-end btn-sm  btn-success" data-bs-toggle="modal" data-bs-target="#importFile">Imprtation de fichier excel </button> <small><livewire:file-attente></small>     
+                         
                   </div> 
                 </div>
                 
@@ -232,41 +259,67 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">      
       <div class="modal-header bg-success">
-        <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Importation de fichier Excel</h1>
+        <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Importation d'élèves dans la base</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p style="color: red; font-weight:bold">Importations fichier excel </p>
-        @if (session()->has('importOK'))
+        
+          @if (session()->has('importOK'))
             <div class="alert alert-success mt-2 mb-2">
               {{ session('importOK') }}
             </div>
           @endif
         <div class="mb-3">
-          <form wire:submit.prevent="import" >
-            <div class="col-1 mt-4"">
-              <span wire:loading style="margin: 0; float-end">
-                <div class="spinner-border text-warning mt-2" role="status">
-                </div>
-              </span>
+          <div class="row">
+            <div class="col-11 col-md-6 mx-auto">
+              <button disabled class="btn file-click">
+                 <!--progress bar montrannt la progression du fichier selection dans le fichier temporaire de livewire ivewire_temp-->
+                @if ($uploadProgress>0)
+                <div class="show_progressbar">
+                  <p>Téléchargement en cours...</p>
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: {{$uploadProgress}}%">@if($uploadProgress>0) {{$uploadProgress}}% @endif  @if($uploadProgress==100) patientez svp @endif</div>
+                  </div>
+                </div> 
+                @else <span style="color:gray">selection fichier excel</span><br> 
+                @endif
+                @if (Str::length($file) > 2)
+                <span  style="color: green"><small>fichier chargé</small> </span><br>
+                @else
+                <span style="color: red"><small>pas de fichier chargé</small> </span><br>
+                @endif
+            <!--Fin de progressbar-->
+                <img class="shadow-lg" src="asset/img/excel-logo.png" style="max-width: 100%" alt=""> 
+                <div style="text-align: center">{{$checkFile}}</div>
+              </button>
+              
             </div>
+          </div>
+          <form wire:submit.prevent="import" enctype="multipart/form-data">
+           
             <div class="row">
-             <label class=""form-label>Importation fichier excel</label>
-            <input disabled  type="file" class="form-control @error('file') is-invalid @enderror file" wire:change="checkfileupload" wire:model="file"><small><livewire:file-attente></small>
-            @error('file') <span class="error" style="color:red; font-weight:bold">{{ $message }}</span> @enderror
-            <small>type de fichier <b class="text-danger">*</b>: XLSL XLS, taille maximale:5mo</small> 
+              <input style="display:none"  type="file" class="form-control @error('file') is-invalid @enderror file" @this.on('uploaded', 'fileUploaded') wire:model="file">
+              <div style="text-align: center">
+                <small><livewire:file-attente></small> <br>
+                @error('file') <small class="error" style="color:red; font-weight:bold">{{ $message }}</small> @enderror
+                <br><small>type de fichier <b class="text-danger">*</b>: <b>XLSL, XLS</b> , taille maximale: <b>5mo</b> </small><br>
+              </div>
             </div>
-            
-            <div class="mt-5">
-              <button disabled class="btn btn-primary submitImport" type="submit">Importation fichier Excel</button>
-            </div>
-            
-            
+            <div class="mt-3">
+              @if (Str::length($file) > 2)
+              <div class="col-12 col-md-6 mx-auto">
+                <button  disabled class="btn col-12 btn-primary submitImport" type="submit">Importation fichier Excel</button>
+              </div>
+              @endif
+            </div>            
           </form>
         </div>
       </div>
       <div class="modal-footer mt-5">
-        
+        <span wire:loading style="margin: 0; float-end">
+          <div class="spinner-border text-warning mt-2" role="status">
+          </div>
+        </span>
       </div>
     </div>
   </div>
@@ -274,8 +327,21 @@
 <!--Fin modal d'importation-->
 
 </div>
+
 <script>
+   var fileName=''
+  document.addEventListener('livewire-upload-progress', (event) => {
+      // Utiliser Livewire pour mettre à jour la variable de progression
+    if ($('.file').val().length>2) {
+      var fileName=$('.file').val().split("\\").pop()
+    }
+      @this.set('uploadProgress', event.detail.progress);
+      @this.set('checkFile',fileName)
+          
+  });
+
   document.addEventListener('livewire:initialized', () => {
+    
     @this.on('deleteUser', (data) => {
       $(".closer").click()
       Swal.fire(
@@ -296,8 +362,10 @@
    
          
     });
-    @this.on('uploaded', (data)=>{
-      console.log(@this.file)
-    })
+    
+   $('.file-click').on('click',function(){
+    $('.file').click()
+   })
+  
   })
 </script>

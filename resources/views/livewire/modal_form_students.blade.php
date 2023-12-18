@@ -4,9 +4,9 @@
       <div class="modal-content" >
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">@if($creer) Enregistrer un élève @endif @if($edit) Modifier l'élève @endif </h1>
-          @if ($creer)<a  class="btn-close " data-bs-dismiss="modal" aria-label="Close" wire:click='cancel()'></a>
+          @if ($creer)<a class="btn-close close " data-bs-dismiss="modal" aria-label="Close" wire:click='cancel()'></a>
           @else
-          <a  class="btn-close closeformUpdateStudent" wire:click='cancel()'></a>
+          <a  class="btn-close" wire:click="closeUpdate" ></a>
           @endif
           
         </div>
@@ -117,9 +117,9 @@
             
             <div class="row mt-4" wire:loading.class="disabled">
               <div class="col-12 col-md mb-3">
-                <label for="formFile" class="form-label " @error('ecole_id') style="color: rgb(192, 79, 79)" @enderror> Selectionner un etablissement d'origine</label>
+                <label for="formFile" class="form-label " @error('ecole_id') style="color: rgb(192, 79, 79)" @enderror> @if($creer) Selectionner un etablissement d'origine @endif @if($edit) <small>{{$ecole_origine}}</small> @endif </label>
                 <div wire:ignore>
-                  <select class="form-select @error('ecole_id') is-invalid @enderror" id="select-beast"  wire:model='ecole_id' autocomplete="off">
+                  <select class="form-select ecole_O @error('ecole_id') is-invalid @enderror" id="select-beast"    wire:model='ecole_id' autocomplete="off">
                     <option value="">selectionner l'école d'origine</option>
                     @foreach ($ecole as $item)
                     <option value="{{$item->id}}" style="z-index: 1;" >{{$item->NOMCOMPLs}}</option>
@@ -215,58 +215,31 @@
     }
     });
     
-$('#modalStudent').on('shown.bs.modal', function () { //permet de savoir si le modal est actif
-  
-    
-      // Le modal est maintenant visible (actif) charger la valeur de ecole origine dans tom-select
-       var checko= setInterval(() => {
-         var i=0
-          select.addItem(@this.ecole_id);
-          if (@this.ecole_id!==null) {
-            i++
-          }
-          if(i>0){
-            clearInterval(checko)//arrete la varible check 
-          } 
-       }, 20);
-
-       // Le modal est maintenant visible (actif) charger la valeur de ecole accueil dans tom-select
-       var checka= setInterval(() => {
-         var j=0
-          select1.addItem(@this.ecole_A);
-          if (@this.ecole_A!==null) {
-            j++
-          }
-          if(j>0){
-            clearInterval(checka)//arrete la varible check 
-          } 
-       }, 20);
-
-       // Le modal est maintenant visible (actif) charger la valeur de ecole accueil dans tom-select
-       var checkf= setInterval(() => {
-         var h=0
-          select2.addItem(@this.fiche_id);
-          if (@this.fiche_id!==null) {
-            h++
-          }
-          if(h>0){
-            clearInterval(checkf)//arrete la varible check 
-          } 
-       }, 20);
-    
-  });
-  
-    
-    $(('.closeformUpdateStudent')).on('click', function(e){
+    @this.on('closeUpdate',(data)=>{
       $('#modalStudent').modal('hide')  
       $('#modalStudentInfos').modal('show') 
+      select.unlock()
+      select.clear()
+      select1.clear()
+      select2.clear() 
     })
-
+    @this.on('cancel', (data) => {
+      select.unlock()
+      select.clear()
+      select1.clear()
+      select2.clear()
+    })
     @this.on('save', (data) => {
       select.clear()
       select1.clear()
       select2.clear()
     });
+    @this.on('modifier',(data)=>{
+      select1.addItem(@this.ecole_A);
+      select.addItem(@this.ecole_id);
+      select2.addItem(@this.fiche_id);
+     select.lock()
+    })
 });
 
 </script>

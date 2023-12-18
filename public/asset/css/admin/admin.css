@@ -1,4 +1,4 @@
-.card {
+.cardadmin {
     margin-bottom: 20px;
     height: 200px;
     background-color: #4158D0;
@@ -40,12 +40,12 @@
     font-size: 14px;
   }
   
-  .card:hover {
+  .cardadmin:hover {
     transform: rotateY(10deg) rotateX(10deg) scale(1.05);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
   
-  .card:before {
+  .cardadmin:before {
     content: "";
     position: absolute;
     top: 0;
@@ -57,11 +57,11 @@
     z-index: 1;
   }
   
-  .card:hover:before {
+  .cardadmin:hover:before {
     transform: translateX(-100%);
   }
   
-  .card:after {
+  .cardadmin:after {
     content: "";
     position: absolute;
     top: 0;
@@ -73,7 +73,7 @@
     z-index: 1;
   }
   
-  .card:hover:after {
+  .cardadmin:hover:after {
     transform: translateX(100%);
   }
   
