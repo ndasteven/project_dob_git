@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Imports\ecoleImport;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -127,7 +128,7 @@ class Admin extends Component
         $this->resetInput();
         
     }
-    //traitement d'importion fichier excel
+    //traitement d'importion fichier  excel des élèves
     
     
     public $file;
@@ -151,7 +152,7 @@ class Admin extends Component
     {
         $this->uploadProgress = $value->getClientOriginalExtension();
     }
-    public function import(){
+    public function importEleve(){
         $import=$this->validate([
             'file'=>'required|mimes:xlsx, xls|max:10240'
         ]);
@@ -165,6 +166,21 @@ class Admin extends Component
         }
  
         session()->flash("importOK", "Verification du fichier importé...");
+    }
+    public function importEcole(){
+        $import=$this->validate([
+            'file'=>'required|mimes:xlsx, xls|max:10240'
+        ]);
+        if($this->file){
+            $data = Excel::queueImport(new ecoleImport, $this->file);
+            $this->file = '';
+            $this->checkFile='';
+            
+        }else{
+            session()->flash("importEcoleOK", "fichier erroné!");
+        }
+ 
+        session()->flash("importEcoleOK", "Verification du fichier importé...");
     }
 
 

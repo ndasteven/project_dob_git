@@ -3,9 +3,9 @@
     <div wire:poll="checkFileAttente"></div> 
     <div class="">
        @if ($fileAttente)
-        <small style="color: red">il y'a {{$countTache}} importation d'élèves en cours...</small>    
+        <small style="color: red">il y'a {{$countTache}} importation en cours...</small>    
         @else
-        <small style="color: green">aucune importation d'élèves en cours</small>
+        <small style="color: green">aucune importation en cours</small>
             
        @endif 
     </div>
