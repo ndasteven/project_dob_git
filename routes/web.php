@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\test;
 use App\Livewire\Admin\Admin;
-use App\Livewire\Drenindex;
+use App\Livewire\DrenIndex;
 use App\Livewire\EtablissementIndex;
 use App\Livewire\FicheIndex;
 use App\Livewire\StudentIndex;
