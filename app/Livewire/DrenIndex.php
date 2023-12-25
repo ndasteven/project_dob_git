@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\Dren;
+use App\Models\dren;
 use Livewire\Component;
 use Livewire\WithPagination;
 
