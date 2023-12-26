@@ -8,7 +8,7 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<link rel="shortcut icon" type="image/png" href="asset/img/logo.png" type="image/x-icon" />
         <!-- SITE TITLE -->
-        <title> DOB ARCHIVE </title>
+        <title> DOB </title>
         <!-- Latest Bootstrap min CSS -->
         <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
         <!-- Google Font -->
@@ -120,4 +120,3 @@
         <script src="assets/js/scripts.js"></script>
     </body>
 </html>
-
